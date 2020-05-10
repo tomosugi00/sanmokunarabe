@@ -53,13 +53,13 @@ namespace Sanmoku.ViewModels
 			this.Square20 = this.sanmokuModel.GetAt((2, 0));
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
-			this.IsFinished = this.sanmokuModel.IsFinished;
+			this.IsFinished = false;
 			this.Winner = this.sanmokuModel.GetWinner();
 
 			this.sanmokuModel.SquareChangedEventHandler += new EventHandler(this.SquareChanged);
 			this.sanmokuModel.TurnChangedEventHandler += new EventHandler(this.TurnChanged);
 			this.sanmokuModel.RetryEventHandler += new EventHandler(this.Retry);
-			this.sanmokuModel.FinishedEventHandler += new EventHandler(this.Finish);
+			this.sanmokuModel.FinishedEventHandler += new EventHandler(this.Finished);
 		}
 
 		#region 状態管理
@@ -477,7 +477,6 @@ namespace Sanmoku.ViewModels
 		private void Retry(object sender, EventArgs e)
 		{
 			this.Turn = this.sanmokuModel.GetCurrentTurn();
-			this.Winner = this.sanmokuModel.GetWinner();
 			this.Square00 = this.sanmokuModel.GetAt((0, 0));
 			this.Square01 = this.sanmokuModel.GetAt((0, 1));
 			this.Square02 = this.sanmokuModel.GetAt((0, 2));
@@ -487,12 +486,13 @@ namespace Sanmoku.ViewModels
 			this.Square20 = this.sanmokuModel.GetAt((2, 0));
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
-			this.IsFinished = this.sanmokuModel.IsFinished;
+			this.IsFinished = false;
+			this.Winner = this.sanmokuModel.GetWinner();
 		}
 
-		private void Finish(object sender, EventArgs e)
+		private void Finished(object sender, EventArgs e)
 		{
-			this.IsFinished = this.sanmokuModel.IsFinished;
+			this.IsFinished = true;
 			this.Winner = this.sanmokuModel.GetWinner();
 		}
 

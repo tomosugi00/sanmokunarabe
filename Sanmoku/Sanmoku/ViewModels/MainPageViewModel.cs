@@ -3,15 +3,20 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Sanmoku.Models;
+using Sanmoku.ViewModels.Base;
 
 namespace Sanmoku.ViewModels
 {
 	public class MainPageViewModel : BaseViewModel
 	{
-		private readonly SanmokuModel sanmokuModel;
+		//TODO 仮設定
+		private const int Size = 3;
+		private const int Moku = 3;
+
+		private readonly XmokuModel sanmokuModel;
 
 		private string _turn;
-		private string _result;
+		private string _winner;
 		private bool _isFinished;
 
 		private string _square00;
@@ -34,12 +39,11 @@ namespace Sanmoku.ViewModels
 		private ICommand _square21Command;
 		private ICommand _square22Command;
 		private ICommand _retryCommand;
-		private ICommand _finishCommand;
 
 		public MainPageViewModel()
 		{
-			this.sanmokuModel = new SanmokuModel();
-			this.Turn = this.sanmokuModel.CurrentTurn;
+			this.sanmokuModel = new XmokuModel(Size, Moku);
+			this.Turn = this.sanmokuModel.GetCurrentTurn();
 			this.Square00 = this.sanmokuModel.GetAt((0, 0));
 			this.Square01 = this.sanmokuModel.GetAt((0, 1));
 			this.Square02 = this.sanmokuModel.GetAt((0, 2));
@@ -49,13 +53,13 @@ namespace Sanmoku.ViewModels
 			this.Square20 = this.sanmokuModel.GetAt((2, 0));
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
-			this.IsFinished = false;
-			this.Result = this.sanmokuModel.Result;
+			this.IsFinished = this.sanmokuModel.IsFinished;
+			this.Winner = this.sanmokuModel.GetWinner();
 
 			this.sanmokuModel.SquareChangedEventHandler += new EventHandler(this.SquareChanged);
 			this.sanmokuModel.TurnChangedEventHandler += new EventHandler(this.TurnChanged);
 			this.sanmokuModel.RetryEventHandler += new EventHandler(this.Retry);
-			this.sanmokuModel.FinishedEventHandler += new EventHandler(this.Finished);
+			this.sanmokuModel.FinishedEventHandler += new EventHandler(this.Finish);
 		}
 
 		#region 状態管理
@@ -70,32 +74,19 @@ namespace Sanmoku.ViewModels
 				if (this._isFinished != value)
 				{
 					this._isFinished = value;
+					RaisePropertyChanged("IsFinished");
 				}
 			}
 		}
-		public string Result
-		{
-			get
-			{
-				return this._result;
-			}
-			private set
-			{
-				if (this._result != value)
-				{
-					this._result = value;
-				}
-				RaisePropertyChanged("Result");
-			}
-		}
+
 		#endregion
 
-		#region ターンラベル
+		#region ラベル
 		public string Turn
 		{
 			get
 			{
-				return this._turn;
+				return this._turn + "のターンです";
 			}
 			private set
 			{
@@ -106,7 +97,26 @@ namespace Sanmoku.ViewModels
 				}
 			}
 		}
+		public string Winner
+		{
+			get
+			{
+				var result = this._winner;
+				if (result == string.Empty)
+					return this._winner;
+				return result + "の勝利です";
+			}
+			private set
+			{
+				if (this._winner != value)
+				{
+					this._winner = value;
+					RaisePropertyChanged("Winner");
+				}
+			}
+		}
 		#endregion
+
 		#region やり直しボタン
 		public ICommand RetryCommand
 		{
@@ -125,28 +135,17 @@ namespace Sanmoku.ViewModels
 		{
 			this.sanmokuModel.Retry();
 		}
-		#endregion
-		#region 終了ボタン
-		public ICommand FinishCommand
+		private bool RetryCommandCanExecute(object obj)
 		{
-			get
-			{
-				if (this._finishCommand == null)
-					this._finishCommand = new DelegateCommand
-					{
-						ExecuteHandler = FinishCommandExecute,
-						CanExecuteHandler = null,
-					};
-				return this._finishCommand;
-			}
-		}
-		private void FinishCommandExecute(object parameter)
-		{
-			this.sanmokuModel.FinishOrTurnChanged();
+			return IsFinished;
 		}
 		#endregion
 
 		#region マス00
+		private bool SquareCommandCanExecute(object obj)
+		{
+			return !IsFinished;
+		}
 		public string Square00
 		{
 			get
@@ -170,15 +169,14 @@ namespace Sanmoku.ViewModels
 					this._square00Command = new DelegateCommand
 					{
 						ExecuteHandler = Square00CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square00Command;
 			}
 		}
 		private void Square00CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((0, 0));
-
+			this.sanmokuModel.SetAt((0, 0));
 		}
 		#endregion
 		#region マス01
@@ -205,14 +203,14 @@ namespace Sanmoku.ViewModels
 					this._square01Command = new DelegateCommand
 					{
 						ExecuteHandler = Square01CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square01Command;
 			}
 		}
 		private void Square01CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((0, 1));
+			this.sanmokuModel.SetAt((0, 1));
 
 		}
 		#endregion
@@ -240,14 +238,14 @@ namespace Sanmoku.ViewModels
 					this._square02Command = new DelegateCommand
 					{
 						ExecuteHandler = Square02CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square02Command;
 			}
 		}
 		private void Square02CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((0, 2));
+			this.sanmokuModel.SetAt((0, 2));
 
 		}
 		#endregion
@@ -275,14 +273,14 @@ namespace Sanmoku.ViewModels
 					this._square10Command = new DelegateCommand
 					{
 						ExecuteHandler = Square10CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square10Command;
 			}
 		}
 		private void Square10CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((1, 0));
+			this.sanmokuModel.SetAt((1, 0));
 
 		}
 		#endregion
@@ -310,14 +308,14 @@ namespace Sanmoku.ViewModels
 					this._square11Command = new DelegateCommand
 					{
 						ExecuteHandler = Square11CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square11Command;
 			}
 		}
 		private void Square11CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((1, 1));
+			this.sanmokuModel.SetAt((1, 1));
 		}
 		#endregion
 		#region マス12
@@ -344,14 +342,14 @@ namespace Sanmoku.ViewModels
 					this._square12Command = new DelegateCommand
 					{
 						ExecuteHandler = Square12CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square12Command;
 			}
 		}
 		private void Square12CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((1, 2));
+			this.sanmokuModel.SetAt((1, 2));
 		}
 		#endregion
 		#region マス20
@@ -378,14 +376,14 @@ namespace Sanmoku.ViewModels
 					this._square20Command = new DelegateCommand
 					{
 						ExecuteHandler = Square20CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square20Command;
 			}
 		}
 		private void Square20CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((2, 0));
+			this.sanmokuModel.SetAt((2, 0));
 		}
 		#endregion
 		#region マス21
@@ -412,14 +410,14 @@ namespace Sanmoku.ViewModels
 					this._square21Command = new DelegateCommand
 					{
 						ExecuteHandler = Square21CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square21Command;
 			}
 		}
 		private void Square21CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((2, 1));
+			this.sanmokuModel.SetAt((2, 1));
 		}
 		#endregion
 		#region マス22
@@ -446,19 +444,18 @@ namespace Sanmoku.ViewModels
 					this._square22Command = new DelegateCommand
 					{
 						ExecuteHandler = Square22CommandExecute,
-						CanExecuteHandler = null,
+						CanExecuteHandler = SquareCommandCanExecute,
 					};
 				return this._square22Command;
 			}
 		}
 		private void Square22CommandExecute(object parameter)
 		{
-			this.sanmokuModel.ChangeAt((2, 2));
+			this.sanmokuModel.SetAt((2, 2));
 		}
 		#endregion
 
 		#region イベント
-
 		private void SquareChanged(object sender, EventArgs e)
 		{
 			this.Square00 = this.sanmokuModel.GetAt((0, 0));
@@ -474,14 +471,13 @@ namespace Sanmoku.ViewModels
 
 		private void TurnChanged(object sender, EventArgs e)
 		{
-			this.Turn = this.sanmokuModel.CurrentTurn;
-			this.IsFinished = false;
-			this.Result = this.sanmokuModel.Result;
+			this.Turn = this.sanmokuModel.GetCurrentTurn();
 		}
 
 		private void Retry(object sender, EventArgs e)
 		{
-			this.Turn = this.sanmokuModel.CurrentTurn;
+			this.Turn = this.sanmokuModel.GetCurrentTurn();
+			this.Winner = this.sanmokuModel.GetWinner();
 			this.Square00 = this.sanmokuModel.GetAt((0, 0));
 			this.Square01 = this.sanmokuModel.GetAt((0, 1));
 			this.Square02 = this.sanmokuModel.GetAt((0, 2));
@@ -491,14 +487,13 @@ namespace Sanmoku.ViewModels
 			this.Square20 = this.sanmokuModel.GetAt((2, 0));
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
-			this.IsFinished = true;
-			this.Result = this.sanmokuModel.Result;
+			this.IsFinished = this.sanmokuModel.IsFinished;
 		}
 
-		private void Finished(object sender, EventArgs e)
+		private void Finish(object sender, EventArgs e)
 		{
-			this.IsFinished = true;
-			this.Result = this.sanmokuModel.Result;
+			this.IsFinished = this.sanmokuModel.IsFinished;
+			this.Winner = this.sanmokuModel.GetWinner();
 		}
 
 		#endregion

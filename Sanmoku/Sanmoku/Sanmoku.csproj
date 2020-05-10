@@ -119,16 +119,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\SanmokuBoard.cs" />
-    <Compile Include="Models\SanmokuState.cs" />
-    <Compile Include="ViewModels\DelegateCommand.cs" />
+    <Compile Include="Models\Board.cs" />
+    <Compile Include="Models\Mark.cs" />
+    <Compile Include="ViewModels\Base\DelegateCommand.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\SanmokuModel.cs" />
+    <Compile Include="Models\XmokuModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
-    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Base\BaseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

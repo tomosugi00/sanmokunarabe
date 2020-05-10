@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Sanmoku.ViewModels
+namespace Sanmoku.ViewModels.Base
 {
     public class DelegateCommand :ICommand
     {

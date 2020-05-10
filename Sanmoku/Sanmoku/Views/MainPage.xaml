@@ -6,46 +6,44 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid RenderTransformOrigin="0.162,0.402">
         <TextBlock x:Name="turn"
-                Margin="772,88,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="278"
+                Margin="40,20,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="300"
                 Text= "{Binding Turn}" />
-        <TextBlock x:Name="result"
-                Margin="772,238,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="278" 
-                Text="{Binding Result}"/>
-        <Button x:Name="retry"
-                Margin="772,288,0,0" Height="50" Width="88" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Content="やり直し" Command="{Binding RetryCommand}"/>
-        <Button x:Name="funish"
-                Margin="772,440,0,0" Height="50" Width="88" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Content="完了" Command="{Binding FinishCommand}" />
+        <TextBlock x:Name="winner"
+                Margin="40,60,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="300"
+                Text= "{Binding Winner}" />
 
         <Button x:Name="b00"
-                Margin="144,88,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="40,120,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square00}" Command="{Binding Square00Command}"/>
         <Button x:Name="b01"
-                Margin="144,238,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="40,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square01}" Command="{Binding Square01Command}"/>
         <Button x:Name="b02"
-                Margin="144,404,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="40,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square02}" Command="{Binding Square02Command}"/>
         <Button x:Name="b10"
-                Margin="336,88,0,0" VerticalAlignment="Top"  Height="100" Width="100"
+                Margin="160,120,0,0" VerticalAlignment="Top"  Height="100" Width="100"
                 Content="{Binding Square10}" Command="{Binding Square10Command}"/>
         <Button x:Name="b11"
-                Margin="336,238,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="160,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square11}" Command="{Binding Square11Command}"/>
         <Button x:Name="b12"
-                Margin="336,404,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="160,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square12}" Command="{Binding Square12Command}"/>
         <Button x:Name="b20"
-                Margin="528,88,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="280,120,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square20}" Command="{Binding Square20Command}"/>
         <Button x:Name="b21"
-                Margin="528,238,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="280,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square21}" Command="{Binding Square21Command}"/>
         <Button x:Name="b22"
-                Margin="528,404,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Margin="280,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
                 Content="{Binding Square22}" Command="{Binding Square22Command}"/>
+
+        <Button x:Name="retry"
+                Margin="280,480,0,0" VerticalAlignment="Top" Height="30" Width="100"
+                Content="やり直し" Command="{Binding RetryCommand}"/>
     </Grid>
 </Page>

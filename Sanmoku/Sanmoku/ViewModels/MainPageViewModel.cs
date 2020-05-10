@@ -54,7 +54,7 @@ namespace Sanmoku.ViewModels
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
 			this.IsFinished = false;
-			this.Winner = this.sanmokuModel.GetWinner();
+			this.Winner = string.Empty;
 
 			this.sanmokuModel.SquareChangedEventHandler += new EventHandler(this.SquareChanged);
 			this.sanmokuModel.TurnChangedEventHandler += new EventHandler(this.TurnChanged);
@@ -101,10 +101,7 @@ namespace Sanmoku.ViewModels
 		{
 			get
 			{
-				var result = this._winner;
-				if (result == string.Empty)
-					return this._winner;
-				return result + "の勝利です";
+				return this._winner;
 			}
 			private set
 			{
@@ -487,13 +484,20 @@ namespace Sanmoku.ViewModels
 			this.Square21 = this.sanmokuModel.GetAt((2, 1));
 			this.Square22 = this.sanmokuModel.GetAt((2, 2));
 			this.IsFinished = false;
-			this.Winner = this.sanmokuModel.GetWinner();
+			this.Winner = string.Empty;
 		}
 
 		private void Finished(object sender, EventArgs e)
 		{
 			this.IsFinished = true;
-			this.Winner = this.sanmokuModel.GetWinner();
+			if(this.sanmokuModel.GetWinner()!=string.Empty)
+			{
+				this.Winner = this.sanmokuModel.GetWinner() + "の勝利です";
+			}
+			else
+			{
+				this.Winner = "引き分けです";
+			}
 		}
 
 		#endregion

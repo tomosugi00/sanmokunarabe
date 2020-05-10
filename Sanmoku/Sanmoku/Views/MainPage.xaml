@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="Sanmoku.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid RenderTransformOrigin="0.162,0.402">
+        <TextBlock x:Name="turn"
+                Margin="40,20,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="300"
+                Text= "{Binding Turn}" />
+        <TextBlock x:Name="winner"
+                Margin="40,60,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="300"
+                Text= "{Binding Winner}" />
+
+        <Button x:Name="b00"
+                Margin="40,120,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square00}" Command="{Binding Square00Command}"/>
+        <Button x:Name="b01"
+                Margin="40,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square01}" Command="{Binding Square01Command}"/>
+        <Button x:Name="b02"
+                Margin="40,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square02}" Command="{Binding Square02Command}"/>
+        <Button x:Name="b10"
+                Margin="160,120,0,0" VerticalAlignment="Top"  Height="100" Width="100"
+                Content="{Binding Square10}" Command="{Binding Square10Command}"/>
+        <Button x:Name="b11"
+                Margin="160,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square11}" Command="{Binding Square11Command}"/>
+        <Button x:Name="b12"
+                Margin="160,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square12}" Command="{Binding Square12Command}"/>
+        <Button x:Name="b20"
+                Margin="280,120,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square20}" Command="{Binding Square20Command}"/>
+        <Button x:Name="b21"
+                Margin="280,240,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square21}" Command="{Binding Square21Command}"/>
+        <Button x:Name="b22"
+                Margin="280,360,0,0" VerticalAlignment="Top" Height="100" Width="100"
+                Content="{Binding Square22}" Command="{Binding Square22Command}"/>
+
+        <Button x:Name="retry"
+                Margin="280,480,0,0" VerticalAlignment="Top" Height="30" Width="100"
+                Content="やり直し" Command="{Binding RetryCommand}"/>
+    </Grid>
+</Page>

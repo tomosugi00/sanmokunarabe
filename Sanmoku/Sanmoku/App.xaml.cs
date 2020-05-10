@@ -5,14 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Sanmoku
@@ -23,8 +17,8 @@ namespace Sanmoku
     sealed partial class App : Application
     {
         /// <summary>
-        ///単一アプリケーション オブジェクトを初期化します。これは、実行される作成したコードの
-        ///最初の行であるため、論理的には main() または WinMain() と等価です。
+        ///コンストラクタ。
+        ///<para>※実行される作成したコードの最初の行であることに注意(論理的にはmain()またはWinMain()と等価)</para>
         /// </summary>
         public App()
         {
@@ -32,43 +26,53 @@ namespace Sanmoku
             this.Suspending += OnSuspending;
         }
 
+        public static class BindingUtilities
+        {
+            public static Visibility BoolToVisibility(bool value) => BoolToVisibility(value, true);
+
+            public static Visibility BoolToVisibility(bool value, bool trueIsVisible)
+            {
+                if (trueIsVisible)
+                {
+                    return value ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+                return value ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
         /// <summary>
-        /// アプリケーションがエンド ユーザーによって正常に起動されたときに呼び出されます。他のエントリ ポイントは、
-        /// アプリケーションが特定のファイルを開くために起動されたときなどに使用されます。
+        /// アプリケーションがエンド ユーザーによって正常に起動されたときに呼び出されます。
+        /// (他のエントリポイント)アプリケーションが特定のファイルを開くために起動された時等
         /// </summary>
         /// <param name="e">起動の要求とプロセスの詳細を表示します。</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-
-            // ウィンドウに既にコンテンツが表示されている場合は、アプリケーションの初期化を繰り返さずに、
-            // ウィンドウがアクティブであることだけを確認してください
-            if (rootFrame == null)
+            // ウィンドウにコンテンツが存在しない場合
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 // ナビゲーション コンテキストとして動作するフレームを作成し、最初のページに移動します
                 rootFrame = new Frame();
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+                //前回終了時の状態を復元
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: 以前中断したアプリケーションから状態を読み込みます
+                    //TODO アプリケーションの状態を復元
                 }
 
-                // フレームを現在のウィンドウに配置します
                 Window.Current.Content = rootFrame;
             }
 
-            if (e.PrelaunchActivated == false)
+            // 事前起動していない場合
+            if (!e.PrelaunchActivated)
             {
                 if (rootFrame.Content == null)
                 {
-                    // ナビゲーションの履歴スタックが復元されていない場合、最初のページに移動します。
-                    // このとき、必要な情報をナビゲーション パラメーターとして渡して、新しいページを
-                    // 作成します
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    // 最初のページに画面遷移
+                    rootFrame.Navigate(typeof(Views.MainPage), e.Arguments);
                 }
-                // 現在のウィンドウがアクティブであることを確認します
+                // 現在のウィンドウをアクティブ化
                 Window.Current.Activate();
             }
         }
@@ -85,15 +89,15 @@ namespace Sanmoku
 
         /// <summary>
         /// アプリケーションの実行が中断されたときに呼び出されます。
-        /// アプリケーションが終了されるか、メモリの内容がそのままで再開されるかに
-        /// かかわらず、アプリケーションの状態が保存されます。
+        /// <para>アプリケーションが終了されるか、メモリの内容がそのままで再開されるかに
+        /// かかわらず、アプリケーションの状態が保存されます。</para>
         /// </summary>
         /// <param name="sender">中断要求の送信元。</param>
         /// <param name="e">中断要求の詳細。</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: アプリケーションの状態を保存してバックグラウンドの動作があれば停止します
+            //TODO アプリケーションの状態を保存
             deferral.Complete();
         }
     }

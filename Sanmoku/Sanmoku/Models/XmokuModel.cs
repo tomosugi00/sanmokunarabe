@@ -5,12 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Composition;
 
+using Sanmoku.Models.Category;
+
 namespace Sanmoku.Models
 {
 	public class XmokuModel
 	{
-		private readonly int BoardSize;
-		private readonly int MokuNumber;
+		#region ゲーム設定
+
+		public static int MaximumSize { get; } = 10;
+		public static int MinimumSize { get; } = 3;
+		public static int MaximumXmoku { get; } = 10;
+		public static int MinimumXmoku { get; } = 3;
+		public static IEnumerable<string> Player1Types
+		{
+			get { return new List<string> { PlayerType.Player.ToString(), PlayerType.CPU.ToString() }; }
+		}
+		public static IEnumerable<string> Player2Types
+		{
+			get { return new List<string> { PlayerType.Player.ToString(), PlayerType.CPU.ToString(), PlayerType.NetWork.ToString() }; }
+		}
+
+		#endregion
 
 		private Board<Mark> board;
 		private Mark currentTurn;
@@ -21,14 +37,18 @@ namespace Sanmoku.Models
 		public event EventHandler RetryEventHandler;
 		public event EventHandler FinishedEventHandler;
 
+		public int BoardSize { get; }
+		public int XmokuNumber { get; }
+
+
 		public bool IsFinished { get; private set; }
 
 		public XmokuModel(int size, int moku)
 		{
 			if (size < moku)
 				throw new ArgumentException();
-			this.BoardSize = size;
-			this.MokuNumber = moku;
+			this.BoardSize = MinimumSize;
+			this.XmokuNumber = MinimumXmoku;
 
 			this.board = new Board<Mark>(size, Mark.Empty);
 			this.currentTurn = Mark.Maru;
@@ -52,7 +72,7 @@ namespace Sanmoku.Models
 
 		public void SetAt((int row, int culumn) square)
 		{
-			if(this.board.GetAt(square)!=Mark.Empty)
+			if (this.board.GetAt(square) != Mark.Empty)
 			{
 				return;
 			}

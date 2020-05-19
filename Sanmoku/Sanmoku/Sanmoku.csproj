@@ -123,6 +123,7 @@
     <Compile Include="Models\Category\Mark.cs" />
     <Compile Include="Models\Category\PlayerType.cs" />
     <Compile Include="ViewModels\Base\DelegateCommand.cs" />
+    <Compile Include="ViewModels\Event\NavigateMainPageEventArg.cs" />
     <Compile Include="ViewModels\TitlePageViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

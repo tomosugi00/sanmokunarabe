@@ -1,7 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
 using Sanmoku.Models;
 using Sanmoku.ViewModels.Base;
 
@@ -42,7 +46,7 @@ namespace Sanmoku.ViewModels
 
 		public MainPageViewModel()
 		{
-			this.sanmokuModel = new XmokuModel(Size, Moku);
+			this.sanmokuModel = new XmokuModel();
 			this.Turn = this.sanmokuModel.GetCurrentTurn();
 			this.Square00 = this.sanmokuModel.GetAt((0, 0));
 			this.Square01 = this.sanmokuModel.GetAt((0, 1));

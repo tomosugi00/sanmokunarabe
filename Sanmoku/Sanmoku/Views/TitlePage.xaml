@@ -16,14 +16,16 @@
 
         <ComboBox   x:Name="Player1ComboBox"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,180,0,0"
-                    Width="160" Height="40"/>
+                    Width="160" Height="40" 
+                    SelectionChanged="Player1ComboBox_SelectionChanged"/>
         <TextBlock  x:Name="VSLabel"
-                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="140,180,0,0"
+                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,180,0,0"
                     Text="VS" FontSize="24" TextAlignment="Center"
-                    Width="200" Height="40"/>
+                    Width="80" Height="40"/>
         <ComboBox   x:Name="Player2ComboBox"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,180,0,0"
-                    Width="160" Height="40"/>
+                    Width="160" Height="40" 
+                    SelectionChanged="Player2ComboBox_SelectionChanged"/>
 
         <TextBlock  x:Name="SizeLabel"
                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,310,0,0"
@@ -32,7 +34,8 @@
                     Width="100" Height="40"/>
         <Slider     x:Name="SizeSlider"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,310,0,0" 
-                    Width="260" Height="40"/>
+                    Width="260" Height="40" 
+                    ValueChanged="SizeSlider_ValueChanged"/>
 
         <TextBlock  x:Name="XmokuLabel"
                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,370,0,0"
@@ -41,12 +44,14 @@
                     Width="100" Height="40"/>
         <Slider     x:Name="XmokuSlider"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,370,0,0" 
-                    Width="260" Height="40"/>
+                    Width="260" Height="40" 
+                    ValueChanged="XmokuSlider_ValueChanged"/>
 
         <Button     x:Name="StartButton"
                     Content="スタート" FontSize="24"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,480,0,0"
-                    Width="200" Height="50"/>
+                    Width="200" Height="50" 
+                    Click="StartButton_Click"/>
 
     </Grid>
 </Page>

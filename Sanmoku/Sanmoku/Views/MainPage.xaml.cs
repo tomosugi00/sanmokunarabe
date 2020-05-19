@@ -17,15 +17,25 @@ using Sanmoku.ViewModels;
 
 namespace Sanmoku.Views
 {
-    /// <summary>
-    /// それ自体で使用できる空白ページまたはフレーム内に移動できる空白ページ。
-    /// </summary>
-    public sealed partial class MainPage : Page
-    {
-        public MainPage()
-        {
-            this.InitializeComponent();
-            this.DataContext = new MainPageViewModel();
-        }
-    }
+	/// <summary>
+	/// <see cref="MainPage"/>のコードビハインド
+	/// </summary>
+	public sealed partial class MainPage : Page
+	{
+		/// <summary>
+		/// 対応するViewModel
+		/// </summary>
+		private MainPageViewModel _mainPageViewModel;
+
+		public MainPage()
+		{
+			this.InitializeComponent();
+		}
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			this._mainPageViewModel = new MainPageViewModel(e.Parameter);
+			base.OnNavigatedTo(e);
+		}
+	}
 }

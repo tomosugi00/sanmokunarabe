@@ -11,6 +11,25 @@ namespace Sanmoku.Models
 {
 	public class XmokuModel
 	{
+		#region ゲーム設定定数(変更不可)
+		/// <summary>
+		/// ボードサイズの設定最大値
+		/// </summary>
+		public static int MaximumSize { get; } = 10;
+		/// <summary>
+		/// ボードサイズの設定最小値
+		/// </summary>
+		public static int MinimumSize { get; } = 3;
+
+		/// <summary>
+		/// X目(勝利マーク数)の設定最大値
+		/// </summary>
+		public static int MaximumXmoku { get; } = 10;
+		/// <summary>
+		/// X目(勝利マーク数)の設定最小値
+		/// </summary>
+		public static int MinimumXmoku { get; } = 3;
+
 		/// <summary>
 		/// プレイヤータイプ。順番保証。
 		/// </summary>
@@ -20,24 +39,6 @@ namespace Sanmoku.Models
 			PlayerType.CPU,
 			PlayerType.NetWork
 		};
-
-		#region ゲーム設定(公開、変更不可)
-		/// <summary>
-		/// ボードサイズの設定最大値
-		/// </summary>
-		public static int MaximumSize { get; } = 10;
-		/// <summary>
-		/// ボードサイズの設定最小値
-		/// </summary>
-		public static int MinimumSize { get; } = 3;
-		/// <summary>
-		/// X目(勝利マーク数)の設定最大値
-		/// </summary>
-		public static int MaximumXmoku { get; } = 10;
-		/// <summary>
-		/// X目(勝利マーク数)の設定最小値
-		/// </summary>
-		public static int MinimumXmoku { get; } = 3;
 		/// <summary>
 		/// プレイヤー1で指定可能なプレイヤータイプ
 		/// </summary>
@@ -46,9 +47,9 @@ namespace Sanmoku.Models
 		/// プレイヤー2で指定可能なプレイヤータイプ
 		/// </summary>
 		public static IReadOnlyList<string> Player2Types => ConvertStringListFrom(PlayerTypes);
-		#endregion
 
-		#region ゲーム状態(公開、変更可)
+		#endregion
+		#region ゲーム設定プロパティ(タイトル画面で変更可)
 		/// <summary>
 		/// プレイヤー1の対応インデックスを返します。
 		/// </summary>
@@ -98,10 +99,12 @@ namespace Sanmoku.Models
 			this.UpdateSettingEventHandler?.Invoke(this, null);
 		}
 		#endregion
-
 		#region イベントハンドラー(タイトル画面)
 		public event EventHandler UpdateSettingEventHandler;
 		#endregion
+
+
+
 		#region イベントハンドラー(対戦画面)
 		public event EventHandler SquareChangedEventHandler;
 		public event EventHandler TurnChangedEventHandler;
@@ -110,43 +113,47 @@ namespace Sanmoku.Models
 		#endregion
 
 
-		private Board<Mark> board;
-		private Mark currentTurn;
-		private Mark winner;
+		private Board<Mark> _board;
+		private Mark _currentTurn;
+		private Mark _winner;
 
 		public bool IsFinished { get; private set; }
 
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
 		public XmokuModel()
 		{
+			//初期値設定(タイトル画面で変更可)
 			this.Size = MinimumSize;
 			this.Xmoku = MinimumXmoku;
-			this.board = new Board<Mark>(MinimumSize, Mark.Empty);
-			this.currentTurn = Mark.Maru;
+			this._board = new Board<Mark>(MinimumSize, Mark.Empty);
+			this._currentTurn = Mark.Maru;
 			this.IsFinished = false;
-			this.winner = Mark.Empty;
+			this._winner = Mark.Empty;
 		}
 
 		public string GetCurrentTurn()
 		{
-			return ConvertStringFrom(this.currentTurn);
+			return ConvertStringFrom(this._currentTurn);
 		}
 		public string GetWinner()
 		{
-			return ConvertStringFrom(this.winner);
+			return ConvertStringFrom(this._winner);
 		}
 
 		public string GetAt((int row, int culumn) square)
 		{
-			return ConvertStringFrom(this.board.GetAt(square));
+			return ConvertStringFrom(this._board.GetAt(square));
 		}
 
 		public void SetAt((int row, int culumn) square)
 		{
-			if (this.board.GetAt(square) != Mark.Empty)
+			if (this._board.GetAt(square) != Mark.Empty)
 			{
 				return;
 			}
-			this.board.SetAt(square, this.currentTurn);
+			this._board.SetAt(square, this._currentTurn);
 			this.SquareChangedEventHandler?.Invoke(this, null);
 
 			if (this.CheckFinished())
@@ -160,22 +167,22 @@ namespace Sanmoku.Models
 
 		public void Retry()
 		{
-			this.board = new Board<Mark>(this.Size, Mark.Empty);
-			this.currentTurn = Mark.Maru;
-			this.winner = Mark.Empty;
+			this._board = new Board<Mark>(this.Size, Mark.Empty);
+			this._currentTurn = Mark.Maru;
+			this._winner = Mark.Empty;
 			this.RetryEventHandler?.Invoke(this, null);
 			return;
 		}
 
 		private void ChangeTurn()
 		{
-			switch (this.currentTurn)
+			switch (this._currentTurn)
 			{
 				case Mark.Maru:
-					this.currentTurn = Mark.Batsu;
+					this._currentTurn = Mark.Batsu;
 					break;
 				case Mark.Batsu:
-					this.currentTurn = Mark.Maru;
+					this._currentTurn = Mark.Maru;
 					break;
 				default:
 					throw new NotImplementedException();
@@ -189,19 +196,19 @@ namespace Sanmoku.Models
 			if (IsFinishedBy(Mark.Maru))
 			{
 				this.IsFinished = true;
-				this.winner = Mark.Maru;
+				this._winner = Mark.Maru;
 				return true;
 			}
 			if (IsFinishedBy(Mark.Batsu))
 			{
 				this.IsFinished = true;
-				this.winner = Mark.Batsu;
+				this._winner = Mark.Batsu;
 				return true;
 			}
 			if (this.IsDraw())
 			{
 				this.IsFinished = true;
-				this.winner = Mark.Empty;
+				this._winner = Mark.Empty;
 				return true;
 			}
 			this.IsFinished = false;
@@ -227,7 +234,7 @@ namespace Sanmoku.Models
 		{
 			for (var column = 0; column < this.Size; column++)
 			{
-				if (this.board.GetAt((0, column)) == mark && this.board.GetAt((1, column)) == mark && this.board.GetAt((2, column)) == mark)
+				if (this._board.GetAt((0, column)) == mark && this._board.GetAt((1, column)) == mark && this._board.GetAt((2, column)) == mark)
 				{
 					return true;
 				}
@@ -244,7 +251,7 @@ namespace Sanmoku.Models
 		{
 			for (var row = 0; row < this.Size; row++)
 			{
-				if (this.board.GetAt((row, 0)) == target && this.board.GetAt((row, 1)) == target && this.board.GetAt((row, 2)) == target)
+				if (this._board.GetAt((row, 0)) == target && this._board.GetAt((row, 1)) == target && this._board.GetAt((row, 2)) == target)
 				{
 					return true;
 				}
@@ -259,11 +266,11 @@ namespace Sanmoku.Models
 		/// <returns></returns>
 		private bool CheckDiagonal(Mark target)
 		{
-			if (this.board.GetAt((0, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((2, 2)) == target)
+			if (this._board.GetAt((0, 0)) == target && this._board.GetAt((1, 1)) == target && this._board.GetAt((2, 2)) == target)
 			{
 				return true;
 			}
-			else if (this.board.GetAt((2, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((0, 2)) == target)
+			else if (this._board.GetAt((2, 0)) == target && this._board.GetAt((1, 1)) == target && this._board.GetAt((0, 2)) == target)
 			{
 				return true;
 			}
@@ -280,7 +287,7 @@ namespace Sanmoku.Models
 			{
 				for (var column = 0; column < this.Size; column++)
 				{
-					if (this.board.GetAt((row, column)) == Mark.Empty)
+					if (this._board.GetAt((row, column)) == Mark.Empty)
 					{
 						return false;
 					}

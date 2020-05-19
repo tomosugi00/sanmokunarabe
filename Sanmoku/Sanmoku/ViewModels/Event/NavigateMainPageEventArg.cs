@@ -16,9 +16,7 @@ namespace Sanmoku.ViewModels.Event
 
 		public NavigateMainPageEventArg(XmokuModel model)
 		{
-			if (model == null)
-				throw new ArgumentNullException();
-			this.XmokuModel = model;
+			this.XmokuModel = model ?? throw new ArgumentNullException();
 		}
 	}
 }

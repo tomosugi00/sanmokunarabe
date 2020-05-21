@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using Sanmoku.ViewModels;
+using Sanmoku.Views.Control;
 
 namespace Sanmoku.Views
 {
@@ -43,6 +44,9 @@ namespace Sanmoku.Views
 			this.InitializeBoard();
 		}
 
+		/// <summary>
+		/// ボードを生成します。
+		/// </summary>
 		private void InitializeBoard()
 		{
 			var boardSize = this._mainPageViewModel.BoardSize;
@@ -57,31 +61,44 @@ namespace Sanmoku.Views
 			{
 				for (int col = 0; col < boardSize; col++)
 				{
-					var btn = CreateSquareButton(row, col);
+					var btn = CreateSquareButton((row, col));
 					this.BoardGrid.Children.Add(btn);
 				}
 			}
 		}
 
-		private Button CreateSquareButton(int row, int col)
+		/// <summary>
+		/// マス用のボタンを生成します。
+		/// </summary>
+		/// <param name="square">配置するボード上の座標</param>
+		/// <returns></returns>
+		private Button CreateSquareButton((int row, int col) square)
 		{
-			var btn = new Button()
+			var btn = new SquareButton(square)
 			{
-				Content = this._mainPageViewModel.GetSquareFrom((row, col)),
+				Content = this._mainPageViewModel.GetSquareFrom((square.row, square.col)),
 				BorderThickness = new Thickness(5, 5, 5, 5),
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch
 			};
 			btn.Click += new RoutedEventHandler(this.SqureButton_Click);
-			Grid.SetColumn(btn, col);
-			Grid.SetRow(btn, row);
+			Grid.SetRow(btn, square.row);
+			Grid.SetColumn(btn, square.col);
 			return btn;
 		}
 
 		#region イベントハンドラー
 		private void RepaintEvent(object sender, EventArgs e)
 		{
-
+			//ボタン更新
+			var size = this._mainPageViewModel.BoardSize;
+			for (var row = 0; row < size; row++)
+			{
+				for (var col = 0; col < size; col++)
+				{
+					//this.BoardGrid.
+				}
+			}
 		}
 		#endregion
 
@@ -93,7 +110,10 @@ namespace Sanmoku.Views
 
 		private void SqureButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.TurnLabel.Text = DateTime.UtcNow.ToString();
+			if (sender is SquareButton btn)
+			{
+				this.TurnLabel.Text = string.Format("{0},{1}", btn.Row, btn.Columm);
+			}
 		}
 		#endregion
 	}

@@ -125,6 +125,7 @@
     <Compile Include="ViewModels\Base\DelegateCommand.cs" />
     <Compile Include="ViewModels\Event\NavigateMainPageEventArg.cs" />
     <Compile Include="ViewModels\TitlePageViewModel.cs" />
+    <Compile Include="Views\Control\SquareButton.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

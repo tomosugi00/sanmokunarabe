@@ -67,5 +67,27 @@ namespace Sanmoku.ViewModels
 			return this._xmokuModel.GetAt(square);
 		}
 
+		public void SetSquareTo((int, int) square)
+		{
+			if (this._xmokuModel.IsFinished)
+			{
+				return;
+			}
+			this._xmokuModel.SetAt(square);
+			RepaintEventHandler?.Invoke(this, null);
+		}
+
+		public string GetCurrentTurn()
+		{
+			return this._xmokuModel.GetCurrentTurn() + "のターンです";
+		}
+		public string GetWinner()
+		{
+			if (string.IsNullOrWhiteSpace(this._xmokuModel.GetWinner()))
+			{
+				return this._xmokuModel.GetWinner();
+			}
+			return this._xmokuModel.GetWinner() + "の勝利です";
+		}
 	}
 }

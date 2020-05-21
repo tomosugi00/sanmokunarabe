@@ -15,6 +15,8 @@ namespace Sanmoku.Views.Control
 		public int Row { get; }
 		public int Columm { get; }
 
+		public (int, int) Square => (this.Row, this.Columm);
+
 		public SquareButton((int row, int column) square) : base()
 		{
 			this.Row = square.row;

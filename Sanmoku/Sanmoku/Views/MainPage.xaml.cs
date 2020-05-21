@@ -40,7 +40,6 @@ namespace Sanmoku.Views
 			this._mainPageViewModel = new MainPageViewModel(e.Parameter);
 			this._mainPageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
 
-			//テスト
 			this.InitializeBoard();
 		}
 
@@ -81,7 +80,11 @@ namespace Sanmoku.Views
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch
 			};
+			//ボタン押下時
 			btn.Click += new RoutedEventHandler(this.SqureButton_Click);
+			//ボタン状態反映
+			this._mainPageViewModel.RepaintEventHandler +=
+				(s, e) => { btn.Content = this._mainPageViewModel.GetSquareFrom(btn.Square); };
 			Grid.SetRow(btn, square.row);
 			Grid.SetColumn(btn, square.col);
 			return btn;
@@ -90,15 +93,8 @@ namespace Sanmoku.Views
 		#region イベントハンドラー
 		private void RepaintEvent(object sender, EventArgs e)
 		{
-			//ボタン更新
-			var size = this._mainPageViewModel.BoardSize;
-			for (var row = 0; row < size; row++)
-			{
-				for (var col = 0; col < size; col++)
-				{
-					//this.BoardGrid.
-				}
-			}
+			this.TurnLabel.Text = this._mainPageViewModel.GetCurrentTurn();
+			this.WinnerLabel.Text = this._mainPageViewModel.GetWinner();
 		}
 		#endregion
 
@@ -112,7 +108,8 @@ namespace Sanmoku.Views
 		{
 			if (sender is SquareButton btn)
 			{
-				this.TurnLabel.Text = string.Format("{0},{1}", btn.Row, btn.Columm);
+				//this.TurnLabel.Text = string.Format("{0},{1}", btn.Row, btn.Columm);
+				this._mainPageViewModel.SetSquareTo((btn.Row, btn.Columm));
 			}
 		}
 		#endregion

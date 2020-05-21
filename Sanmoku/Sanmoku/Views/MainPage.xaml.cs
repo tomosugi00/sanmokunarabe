@@ -67,7 +67,7 @@ namespace Sanmoku.Views
 		}
 
 		/// <summary>
-		/// マス用のボタンを生成します。
+		/// ボード上に配置するボタンを生成します。
 		/// </summary>
 		/// <param name="square">配置するボード上の座標</param>
 		/// <returns></returns>
@@ -99,11 +99,21 @@ namespace Sanmoku.Views
 		#endregion
 
 		#region アクション
+		/// <summary>
+		/// やり直しボタンの操作
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void RetryButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.mainPageViewModel.RetryGame();
 		}
 
+		/// <summary>
+		/// ボード上のボタンの操作(共通)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void SquareButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is SquareButton btn)

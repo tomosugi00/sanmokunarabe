@@ -35,7 +35,7 @@ namespace Sanmoku.ViewModels
 			{
 				if (!this.xmokuModel.IsFinished)
 				{
-					return this.xmokuModel.GetWinner(); //対戦中
+					return string.Empty; //対戦中
 				}
 				else if (string.IsNullOrWhiteSpace(this.xmokuModel.GetWinner()))
 				{
@@ -91,6 +91,9 @@ namespace Sanmoku.ViewModels
 			this.RepaintEventHandler?.Invoke(this, null);
 		}
 
+		/// <summary>
+		/// 対戦の状態を初期化します。
+		/// </summary>
 		public void RetryGame()
 		{
 			this.xmokuModel.RetryGame();

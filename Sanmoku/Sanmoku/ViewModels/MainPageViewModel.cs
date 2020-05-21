@@ -14,24 +14,41 @@ namespace Sanmoku.ViewModels
 {
 	public class MainPageViewModel : BaseViewModel
 	{
-		private readonly XmokuModel _xmokuModel;
+		private readonly XmokuModel xmokuModel;
 
-		private string _turn;
-		private string _winner;
-		private bool _isFinished;
+		/// <summary>
+		/// ボードのサイズを取得します。
+		/// </summary>
+		public int BoardSize => this.xmokuModel.Size;
 
-		#region イベントハンドラー
+		/// <summary>
+		/// 現在の操作可能なプレイヤーを示すテキストを取得します。
+		/// </summary>
+		public string CurrentTurn => this.xmokuModel.GetCurrentTurn() + "のターンです";
+
+		/// <summary>
+		/// 勝利者を示すテキストを取得します。
+		/// </summary>
+		public string Winner
+		{
+			get
+			{
+				if (!this.xmokuModel.IsFinished)
+				{
+					return this.xmokuModel.GetWinner(); //対戦中
+				}
+				else if (string.IsNullOrWhiteSpace(this.xmokuModel.GetWinner()))
+				{
+					return "引き分けです。";   //引き分け
+				}
+				return this.xmokuModel.GetWinner() + "の勝利です";
+			}
+		}
+
 		/// <summary>
 		/// 再描画がする際発火するイベント
 		/// </summary>
 		public event EventHandler RepaintEventHandler;
-		#endregion
-
-		public int BoardSize
-		{
-			get => this._xmokuModel.Size;
-		}
-
 
 		public MainPageViewModel(object obj)
 		{
@@ -46,48 +63,40 @@ namespace Sanmoku.ViewModels
 				throw new ArgumentException(nameof(obj));
 			}
 
-			this._xmokuModel = model;
-
-			//this.Turn = model.GetCurrentTurn();
-			//this.IsFinished = false;
-			//this.Winner = string.Empty;
-
-			//イベントハンドラ
-			//this._xmokuModel.SquareChangedEventHandler += new EventHandler(this.SquareChanged);
-			//this._xmokuModel.TurnChangedEventHandler += new EventHandler(this.TurnChanged);
-			//this._xmokuModel.RetryEventHandler += new EventHandler(this.Retry);
-			//this._xmokuModel.FinishedEventHandler += new EventHandler(this.Finished);
-
-			//リペイント？
-
+			this.xmokuModel = model;
 		}
 
+		/// <summary>
+		/// ボード上の座標<paramref name="square"/>に位置するマークを取得します。
+		/// </summary>
+		/// <param name="square"></param>
+		/// <returns></returns>
 		public string GetSquareFrom((int, int) square)
 		{
-			return this._xmokuModel.GetAt(square);
+			return this.xmokuModel.GetAt(square);
 		}
 
+		/// <summary>
+		/// ボード上の座標<paramref name="square"/>にプレイヤーのマークをセットします。
+		/// <para>既に勝敗が決まっている場合は無効になります。</para>
+		/// </summary>
+		/// <param name="square"></param>
 		public void SetSquareTo((int, int) square)
 		{
-			if (this._xmokuModel.IsFinished)
+			if (this.xmokuModel.IsFinished)
 			{
 				return;
 			}
-			this._xmokuModel.SetAt(square);
-			RepaintEventHandler?.Invoke(this, null);
+			this.xmokuModel.SetAt(square);
+			this.RepaintEventHandler?.Invoke(this, null);
 		}
 
-		public string GetCurrentTurn()
+		public void RetryGame()
 		{
-			return this._xmokuModel.GetCurrentTurn() + "のターンです";
+			this.xmokuModel.RetryGame();
+			this.RepaintEventHandler?.Invoke(this, null);
 		}
-		public string GetWinner()
-		{
-			if (string.IsNullOrWhiteSpace(this._xmokuModel.GetWinner()))
-			{
-				return this._xmokuModel.GetWinner();
-			}
-			return this._xmokuModel.GetWinner() + "の勝利です";
-		}
+
+
 	}
 }

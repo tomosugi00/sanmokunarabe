@@ -108,7 +108,7 @@ namespace Sanmoku.Models
 		#region イベントハンドラー(対戦画面)
 		public event EventHandler SquareChangedEventHandler;
 		public event EventHandler TurnChangedEventHandler;
-		public event EventHandler RetryEventHandler;
+		//public event EventHandler RetryEventHandler;
 		public event EventHandler FinishedEventHandler;
 		#endregion
 
@@ -132,7 +132,6 @@ namespace Sanmoku.Models
 			this.board = new Board<Mark>(MinimumSize, Mark.Empty);
 			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
-
 		}
 
 		public string GetCurrentTurn()
@@ -168,12 +167,13 @@ namespace Sanmoku.Models
 			return;
 		}
 
-		public void Retry()
+		public void RetryGame()
 		{
 			this.board = new Board<Mark>(this.Size, Mark.Empty);
 			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
-			this.RetryEventHandler?.Invoke(this, null);
+			this.IsFinished = false;
+			//this.RetryEventHandler?.Invoke(this, null);
 			return;
 		}
 
@@ -226,7 +226,6 @@ namespace Sanmoku.Models
 			}
 			return CheckVertical(mark) || CheckHorizontal(mark) || CheckDiagonal(mark);
 		}
-
 
 		/// <summary>
 		/// 縦が揃ったか
@@ -299,6 +298,7 @@ namespace Sanmoku.Models
 			return true;
 		}
 
+		#region ViewModel用変換
 		private static string ConvertStringFrom(Mark state)
 		{
 			switch (state)
@@ -323,5 +323,6 @@ namespace Sanmoku.Models
 			}
 			return list;
 		}
+		#endregion
 	}
 }

@@ -19,7 +19,7 @@ namespace Sanmoku.ViewModels
 		/// <summary>
 		/// 連携するModelクラス
 		/// </summary>
-		private readonly XmokuModel xmokuModel;
+		private readonly XmokuModel _xmokuModel;
 
 		#region ゲーム設定
 		public int MaximumSize { get { return XmokuModel.MaximumSize; } }
@@ -47,11 +47,11 @@ namespace Sanmoku.ViewModels
 		/// </summary>
 		public int Player1
 		{
-			get => this.xmokuModel.Player1;
+			get => this._xmokuModel.Player1;
 		}
 		public void SetPlayer1(int index)
 		{
-			this.xmokuModel.SetPlayer1(index);
+			this._xmokuModel.SetPlayer1(index);
 			this.RepaintEventHandler?.Invoke(this, null);
 		}
 		/// <summary>
@@ -59,11 +59,11 @@ namespace Sanmoku.ViewModels
 		/// </summary>
 		public int Player2
 		{
-			get => this.xmokuModel.Player2;
+			get => this._xmokuModel.Player2;
 		}
 		public void SetPlayer2(int index)
 		{
-			this.xmokuModel.SetPlayer2(index);
+			this._xmokuModel.SetPlayer2(index);
 			this.RepaintEventHandler?.Invoke(this, null);
 		}
 		/// <summary>
@@ -71,11 +71,11 @@ namespace Sanmoku.ViewModels
 		/// </summary>
 		public int Size
 		{
-			get => this.xmokuModel.Size;
+			get => this._xmokuModel.Size;
 		}
 		public void SetSize(double size)
 		{
-			this.xmokuModel.SetSize((int)size);
+			this._xmokuModel.SetSize((int)size);
 			this.RepaintEventHandler?.Invoke(this, null);
 		}
 		/// <summary>
@@ -83,11 +83,11 @@ namespace Sanmoku.ViewModels
 		/// </summary>
 		public int Xmoku
 		{
-			get => this.xmokuModel.Xmoku;
+			get => this._xmokuModel.Xmoku;
 		}
 		public void SetXmoku(double xmoku)
 		{
-			this.xmokuModel.SetXmoku((int)xmoku);
+			this._xmokuModel.SetXmoku((int)xmoku);
 			this.RepaintEventHandler?.Invoke(this, null);
 		}
 		#endregion
@@ -97,7 +97,7 @@ namespace Sanmoku.ViewModels
 		/// </summary>
 		public TitlePageViewModel()
 		{
-			this.xmokuModel = new XmokuModel();
+			this._xmokuModel = new XmokuModel();
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace Sanmoku.ViewModels
 		public void NavigateMainPage()
 		{
 			//画面遷移の方法はView依存
-			this.NavigateViewEventHandler?.Invoke(this, new NavigateMainPageEventArg(this.xmokuModel));
+			this.NavigateViewEventHandler?.Invoke(this, new NavigateMainPageEventArg(this._xmokuModel));
 		}
 	}
 }

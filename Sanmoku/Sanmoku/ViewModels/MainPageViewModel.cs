@@ -48,7 +48,7 @@ namespace Sanmoku.ViewModels
 		/// <summary>
 		/// 再描画がする際発火するイベント
 		/// </summary>
-		public event EventHandler RepaintEventHandler;
+		//public event EventHandler RepaintEventHandler;
 
 		public MainPageViewModel(object obj)
 		{
@@ -93,7 +93,7 @@ namespace Sanmoku.ViewModels
 				return;
 			}
 			this.xmokuModel.SetAt(square);
-			this.RepaintEventHandler?.Invoke(this, null);
+			//this.RepaintEventHandler?.Invoke(this, null);
 		}
 
 		/// <summary>
@@ -102,7 +102,12 @@ namespace Sanmoku.ViewModels
 		public void RetryGame()
 		{
 			this.xmokuModel.RetryGame();
-			this.RepaintEventHandler?.Invoke(this, null);
+			//this.RepaintEventHandler?.Invoke(this, null);
+		}
+
+		public void SetRepaintEventHandler(EventHandler handler)
+		{
+			this.xmokuModel.RepaintEventHandler += handler;
 		}
 
 

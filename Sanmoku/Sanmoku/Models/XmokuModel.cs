@@ -108,9 +108,10 @@ namespace Sanmoku.Models
 		#endregion
 
 		#region イベントハンドラー(対戦画面)
-		public event EventHandler SquareChangedEventHandler;
-		public event EventHandler TurnChangedEventHandler;
-		public event EventHandler FinishedEventHandler;
+		//public event EventHandler SquareChangedEventHandler;
+		//public event EventHandler TurnChangedEventHandler;
+		//public event EventHandler FinishedEventHandler;
+		public event EventHandler RepaintEventHandler;
 		#endregion
 
 		private Board<Mark> board;
@@ -161,14 +162,16 @@ namespace Sanmoku.Models
 				return;
 			}
 			this.board.SetAt(square, this.currentTurn);
-			this.SquareChangedEventHandler?.Invoke(this, null);
+			//this.SquareChangedEventHandler?.Invoke(this, null);
 
 			if (this.CheckFinished())
 			{
-				this.FinishedEventHandler?.Invoke(this, null);
+				//this.FinishedEventHandler?.Invoke(this, null);
+				this.RepaintEventHandler?.Invoke(this, null);
 				return;
 			}
 			this.ChangeTurn();
+			this.RepaintEventHandler?.Invoke(this,null);
 			return;
 		}
 
@@ -192,6 +195,7 @@ namespace Sanmoku.Models
 			this.winner = Mark.Empty;
 			this.CanManual = false;
 			this.IsFinished = false;
+			this.RepaintEventHandler?.Invoke(this, null);
 
 			this.GameStart();
 			return;
@@ -213,7 +217,7 @@ namespace Sanmoku.Models
 				default:
 					throw new NotImplementedException();
 			}
-			this.TurnChangedEventHandler?.Invoke(this, null);
+			//this.TurnChangedEventHandler?.Invoke(this, null);
 
 			switch (this.currentTurn)
 			{

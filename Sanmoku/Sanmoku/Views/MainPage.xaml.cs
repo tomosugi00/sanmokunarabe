@@ -40,7 +40,8 @@ namespace Sanmoku.Views
 			this.mainPageViewModel = new MainPageViewModel(e.Parameter);
 			this.TurnLabel.Text = this.mainPageViewModel.CurrentTurn;
 			this.WinnerLabel.Text = this.mainPageViewModel.Winner;
-			this.mainPageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
+			//this.mainPageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
+			this.mainPageViewModel.SetRepaintEventHandler(new EventHandler(this.RepaintEvent));
 			this.InitializeBoard();
 
 			//スタート
@@ -87,8 +88,8 @@ namespace Sanmoku.Views
 			//ボタン押下時
 			btn.Click += new RoutedEventHandler(this.SquareButton_Click);
 			//描画時のイベント
-			this.mainPageViewModel.RepaintEventHandler +=
-				(s, e) => { btn.Content = this.mainPageViewModel.GetSquareFrom(btn.Square); };
+			this.mainPageViewModel.SetRepaintEventHandler(new EventHandler(
+				(s, e) => { btn.Content = this.mainPageViewModel.GetSquareFrom(btn.Square); }));
 			Grid.SetRow(btn, square.row);
 			Grid.SetColumn(btn, square.col);
 			return btn;

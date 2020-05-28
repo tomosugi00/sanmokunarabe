@@ -83,7 +83,7 @@ namespace Sanmoku.ViewModels
 		/// <param name="square"></param>
 		public void SetSquareTo((int, int) square)
 		{
-			if (this.xmokuModel.IsFinished)
+			if (!this.xmokuModel.CanOperate)
 			{
 				return;
 			}

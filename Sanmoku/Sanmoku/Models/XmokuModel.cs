@@ -113,12 +113,13 @@ namespace Sanmoku.Models
 		public event EventHandler FinishedEventHandler;
 		#endregion
 
-
 		private Board<Mark> board;
 		private Mark currentTurn;
 		private Mark winner;
 
 		public bool IsFinished { get; private set; }
+		public bool CanManual { get; set; }
+		public bool CanOperate => !this.IsFinished && CanManual;
 
 		/// <summary>
 		/// コンストラクタ

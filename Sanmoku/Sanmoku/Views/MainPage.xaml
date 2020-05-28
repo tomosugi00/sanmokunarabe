@@ -11,13 +11,13 @@
                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,20"
                    Height="30" Width="300"
                    TextWrapping="Wrap"
-                   Text="aaa"/>
+                   Text=""/>
 
         <TextBlock x:Name="WinnerLabel"
                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,60" 
                    Height="30" Width="300"
                    TextWrapping="Wrap"
-                   Text="bbb"/>
+                   Text=""/>
 
         <Button x:Name="RetryButton" Content="やり直し"
                 Margin="340,510,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"

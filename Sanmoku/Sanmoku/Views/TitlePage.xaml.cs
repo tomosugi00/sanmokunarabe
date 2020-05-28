@@ -44,6 +44,7 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void RepaintEvent(object sender, EventArgs e)
 		{
+			this.XLabel.Text = this.titlePageViewModel.Xmoku.ToString();
 			this.Player1ComboBox.SelectedIndex = this.titlePageViewModel.Player1;
 			this.Player2ComboBox.SelectedIndex = this.titlePageViewModel.Player2;
 			this.SizeSlider.Value = this.titlePageViewModel.Size;
@@ -67,10 +68,19 @@ namespace Sanmoku.Views
 		private void SettingCompornent()
 		{
 			//コンポーネントの初期化メソッドで構成
+			this.SettingXLabelTextBox();
 			this.SettingPlayer1Combobox();
 			this.SettingPlayer2Combobox();
 			this.SettingSizeSlider();
 			this.SettingXmokuSlider();
+			return;
+		}
+		/// <summary>
+		/// ゲームタイトルの初期設定を行います。
+		/// </summary>
+		private void SettingXLabelTextBox()
+		{
+			this.XLabel.Text = this.titlePageViewModel.Xmoku.ToString();
 			return;
 		}
 		/// <summary>

@@ -9,11 +9,19 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Height="600" Width="480">
 
     <Grid>
-        <TextBlock  x:Name="TitleLabel"
+        <TextBlock  x:Name="XLabel"
                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="140,50,0,0"
-                    Text="X目並べ" FontSize="36" TextAlignment="Center"
-                    Width="200" Height="60"/>
+                    Text="" FontSize="36" TextAlignment="Right"
+                    Width="60" Height="60"/>
+        <TextBlock  x:Name="TitleLabel"
+                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,50,0,0"
+                    Text="目並べ" FontSize="36" TextAlignment="Left"
+                    Width="160" Height="60"/>
 
+        <TextBlock  x:Name="Player1Label"
+                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,140,0,0"
+                    Text="〇" FontSize="24" TextAlignment="Center"
+                    Width="160" Height="40"/>
         <ComboBox   x:Name="Player1ComboBox"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,180,0,0"
                     Width="160" Height="40" 
@@ -22,6 +30,10 @@
                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,180,0,0"
                     Text="VS" FontSize="24" TextAlignment="Center"
                     Width="80" Height="40"/>
+        <TextBlock  x:Name="Player2Label"
+                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="290,140,0,0"
+                    Text="×" FontSize="24" TextAlignment="Center"
+                    Width="160" Height="40"/>
         <ComboBox   x:Name="Player2ComboBox"
                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,180,0,0"
                     Width="160" Height="40" 

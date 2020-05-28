@@ -122,6 +122,7 @@
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Category\Mark.cs" />
     <Compile Include="Models\Category\PlayerType.cs" />
+    <Compile Include="Models\Util\Util.cs" />
     <Compile Include="ViewModels\Base\DelegateCommand.cs" />
     <Compile Include="ViewModels\Event\NavigateMainPageEventArg.cs" />
     <Compile Include="ViewModels\TitlePageViewModel.cs" />

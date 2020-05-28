@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Composition;
 
 using Sanmoku.Models.Category;
+using Sanmoku.Models.Util;
 
 namespace Sanmoku.Models
 {
@@ -167,6 +168,9 @@ namespace Sanmoku.Models
 			return;
 		}
 
+		/// <summary>
+		/// ゲームを対戦開始直後に戻します。
+		/// </summary>
 		public void RetryGame()
 		{
 			this.board = new Board<Mark>(this.Size, Mark.Empty);
@@ -177,6 +181,9 @@ namespace Sanmoku.Models
 			return;
 		}
 
+		/// <summary>
+		/// ターンを交代します。
+		/// </summary>
 		private void ChangeTurn()
 		{
 			switch (this.currentTurn)
@@ -194,6 +201,10 @@ namespace Sanmoku.Models
 			return;
 		}
 
+		/// <summary>
+		/// ゲームが終了したか判定します。
+		/// </summary>
+		/// <returns></returns>
 		private bool CheckFinished()
 		{
 			if (IsFinishedBy(Mark.Maru))
@@ -208,7 +219,7 @@ namespace Sanmoku.Models
 				this.winner = Mark.Batsu;
 				return true;
 			}
-			if (this.IsDraw())
+			if (this.CheckDraw())
 			{
 				this.IsFinished = true;
 				this.winner = Mark.Empty;
@@ -218,15 +229,21 @@ namespace Sanmoku.Models
 			return false;
 		}
 
+		#region 勝利判定
+		/// <summary>
+		/// <paramref name="mark"/>が勝利したか判定します。
+		/// <paramref name="mark"/>に<seealso cref="Mark.Empty"/>を指定した場合はfalseを返します。
+		/// </summary>
+		/// <param name="mark"></param>
+		/// <returns></returns>
 		private bool IsFinishedBy(Mark mark)
 		{
 			if (mark == Mark.Empty)
 			{
 				return false;
 			}
-			return CheckVertical(mark) || CheckHorizontal(mark) || CheckDiagonal(mark);
+			return CheckVertical(mark) || CheckHorizontal(mark) || CheckLowerRight(mark) || CheckUpperRight(mark);
 		}
-
 		/// <summary>
 		/// 縦が揃ったか
 		/// </summary>
@@ -234,62 +251,106 @@ namespace Sanmoku.Models
 		/// <returns></returns>
 		private bool CheckVertical(Mark mark)
 		{
-			for (var column = 0; column < this.Size; column++)
+			for (var r = 0; r <= this.Size - this.Xmoku; r++)
 			{
-				if (this.board.GetAt((0, column)) == mark && this.board.GetAt((1, column)) == mark && this.board.GetAt((2, column)) == mark)
+				for (var c = 0; c < this.Size; c++)
 				{
-					return true;
+					var list = new List<Mark>();
+					for (var i = r; i < r + this.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((i, c)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
 				}
 			}
 			return false;
 		}
-
 		/// <summary>
 		/// 横が揃ったか
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="mark"></param>
 		/// <returns></returns>
-		private bool CheckHorizontal(Mark target)
+		private bool CheckHorizontal(Mark mark)
 		{
-			for (var row = 0; row < this.Size; row++)
+			for (var r = 0; r < this.Size; r++)
 			{
-				if (this.board.GetAt((row, 0)) == target && this.board.GetAt((row, 1)) == target && this.board.GetAt((row, 2)) == target)
+				for (var c = 0; c <= this.Size - this.Xmoku; c++)
 				{
-					return true;
+					var list = new List<Mark>();
+					for (var i = c; i < c + this.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r, i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
 				}
 			}
 			return false;
 		}
-
 		/// <summary>
-		/// 斜めが揃ったか
+		/// 斜め方向(右下がり)も揃ったか
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="mark"></param>
 		/// <returns></returns>
-		private bool CheckDiagonal(Mark target)
+		private bool CheckLowerRight(Mark mark)
 		{
-			if (this.board.GetAt((0, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((2, 2)) == target)
+			for (var r = 0; r <= this.Size - this.Xmoku; r++)
 			{
-				return true;
-			}
-			else if (this.board.GetAt((2, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((0, 2)) == target)
-			{
-				return true;
+				for (var c = 0; c <= this.Size - this.Xmoku; c++)
+				{
+					var list = new List<Mark>();
+					for (var i = 0; i < this.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r + i, c + i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
+				}
 			}
 			return false;
 		}
-
+		/// <summary>
+		/// 斜め方向(右上がり)に揃ったか
+		/// </summary>
+		/// <param name="mark"></param>
+		/// <returns></returns>
+		private bool CheckUpperRight(Mark mark)
+		{
+			for (var r = this.Size - 1; r >= this.Xmoku - 1; r--)
+			{
+				for (var c = 0; c <= this.Size - this.Xmoku; c++)
+				{
+					var list = new List<Mark>();
+					for (var i = 0; i < this.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r - i, c + i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 		/// <summary>
 		/// 引き分けか
 		/// </summary>
 		/// <returns></returns>
-		private bool IsDraw()
+		private bool CheckDraw()
 		{
-			for (var row = 0; row < this.Size; row++)
+			for (var r = 0; r < this.Size; r++)
 			{
-				for (var column = 0; column < this.Size; column++)
+				for (var c = 0; c < this.Size; c++)
 				{
-					if (this.board.GetAt((row, column)) == Mark.Empty)
+					if (this.board.GetAt((r, c)) == Mark.Empty)
 					{
 						return false;
 					}
@@ -297,6 +358,7 @@ namespace Sanmoku.Models
 			}
 			return true;
 		}
+		#endregion
 
 		#region ViewModel用変換
 		private static string ConvertStringFrom(Mark state)

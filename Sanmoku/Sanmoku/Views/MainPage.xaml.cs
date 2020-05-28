@@ -38,9 +38,13 @@ namespace Sanmoku.Views
 			base.OnNavigatedTo(e);
 
 			this.mainPageViewModel = new MainPageViewModel(e.Parameter);
+			this.TurnLabel.Text = this.mainPageViewModel.CurrentTurn;
+			this.WinnerLabel.Text = this.mainPageViewModel.Winner;
 			this.mainPageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
-
 			this.InitializeBoard();
+
+			//スタート
+			this.mainPageViewModel.GameStart();
 		}
 
 		/// <summary>

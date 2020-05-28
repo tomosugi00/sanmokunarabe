@@ -66,6 +66,11 @@ namespace Sanmoku.ViewModels
 			this.xmokuModel = model;
 		}
 
+		public void GameStart()
+		{
+			this.xmokuModel.GameStart();
+		}
+
 		/// <summary>
 		/// ボード上の座標<paramref name="square"/>に位置するマークを取得します。
 		/// </summary>

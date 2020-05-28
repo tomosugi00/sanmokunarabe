@@ -7,6 +7,7 @@ using Windows.UI.Composition;
 
 using Sanmoku.Models.Category;
 using Sanmoku.Models.Util;
+using Sanmoku.Models.Player;
 
 namespace Sanmoku.Models
 {
@@ -109,13 +110,14 @@ namespace Sanmoku.Models
 		#region イベントハンドラー(対戦画面)
 		public event EventHandler SquareChangedEventHandler;
 		public event EventHandler TurnChangedEventHandler;
-		//public event EventHandler RetryEventHandler;
 		public event EventHandler FinishedEventHandler;
 		#endregion
 
 		private Board<Mark> board;
 		private Mark currentTurn;
 		private Mark winner;
+		private BasePlayer player1;
+		private BasePlayer player2;
 
 		public bool IsFinished { get; private set; }
 		public bool CanManual { get; set; }
@@ -129,6 +131,7 @@ namespace Sanmoku.Models
 			//初期値設定(タイトル画面で変更可)
 			this.Size = MinimumSize;
 			this.Xmoku = MinimumXmoku;
+			this.CanManual = false;
 			this.IsFinished = false;
 
 			this.board = new Board<Mark>(MinimumSize, Mark.Empty);
@@ -170,6 +173,16 @@ namespace Sanmoku.Models
 		}
 
 		/// <summary>
+		/// ゲームを開始します
+		/// </summary>
+		public void GameStart()
+		{
+			this.player1 = PlayerFactory.GetPlayer1(this);
+			this.player2 = PlayerFactory.GetPlayer2(this);
+			this.player1.StartAsync();
+		}
+
+		/// <summary>
 		/// ゲームを対戦開始直後に戻します。
 		/// </summary>
 		public void RetryGame()
@@ -177,8 +190,10 @@ namespace Sanmoku.Models
 			this.board = new Board<Mark>(this.Size, Mark.Empty);
 			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
+			this.CanManual = false;
 			this.IsFinished = false;
-			//this.RetryEventHandler?.Invoke(this, null);
+
+			this.GameStart();
 			return;
 		}
 
@@ -199,7 +214,18 @@ namespace Sanmoku.Models
 					throw new NotImplementedException();
 			}
 			this.TurnChangedEventHandler?.Invoke(this, null);
-			return;
+
+			switch (this.currentTurn)
+			{
+				case Mark.Maru:
+					this.player1.StartAsync();
+					return;
+				case Mark.Batsu:
+					this.player2.StartAsync();
+					return;
+				default:
+					throw new NotImplementedException();
+			}
 		}
 
 		/// <summary>

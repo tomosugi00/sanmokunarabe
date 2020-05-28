@@ -26,9 +26,10 @@ namespace Sanmoku.Models.Player
 				var r = rondom.Next(0, this.xmokuModel.Size);
 				var c = rondom.Next(0, this.xmokuModel.Size);
 
-				if (this.xmokuModel.GetAt((r, c)) == Mark.Empty.ToString())
+				var t = this.xmokuModel.GetAt((r, c));
+				if (t == string.Empty)
 				{
-					await Task.Delay(TimeSpan.FromSeconds(1));
+					await Task.Delay(TimeSpan.FromMilliseconds(100));
 					this.xmokuModel.SetAt((r, c));
 					return;
 				}

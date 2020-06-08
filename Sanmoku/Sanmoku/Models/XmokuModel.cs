@@ -37,7 +37,7 @@ namespace Sanmoku.Models
 		/// </summary>
 		private static readonly List<PlayerType> PlayerTypes = new List<PlayerType>
 		{
-			PlayerType.Player,
+			PlayerType.User,
 			PlayerType.CPU,
 			PlayerType.NetWork
 		};

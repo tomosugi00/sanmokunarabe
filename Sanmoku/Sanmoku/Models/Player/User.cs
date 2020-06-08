@@ -6,9 +6,15 @@ using System.Threading.Tasks;
 
 namespace Sanmoku.Models.Player
 {
-	public class Player : BasePlayer
+	public class User : BasePlayer
 	{
-		public Player(XmokuModel model) : base(model) { }
+		public User(XmokuModel model) : base(model) { }
+
+		public override void Action()
+		{
+			throw new NotImplementedException();
+		}
+
 
 		public override async Task StartAsync()
 		{

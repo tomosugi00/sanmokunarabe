@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Sanmoku.Models.Category
 {
+	/// <summary>
+	/// 操作するプレイヤーの種類
+	/// </summary>
 	public enum PlayerType
 	{
 		/// <summary>
-		/// プレイヤー
+		/// ユーザー
 		/// </summary>
-		Player,
+		User,
 		/// <summary>
 		/// CPU
 		/// </summary>

@@ -17,8 +17,13 @@ namespace Sanmoku.Models.Player
 		}
 
 		/// <summary>
-		/// プレイヤーの操作を開始する
+		/// プレイヤーの操作を実行します
 		/// </summary>
 		public abstract Task StartAsync();
+
+		/// <summary>
+		/// 画面の操作を受け付けます
+		/// </summary>
+		public abstract void Action();
 	}
 }

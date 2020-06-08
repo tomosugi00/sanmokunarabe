@@ -35,5 +35,10 @@ namespace Sanmoku.Models.Player
 				}
 			}
 		}
+
+		public override void Action()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

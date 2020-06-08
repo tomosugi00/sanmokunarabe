@@ -124,8 +124,8 @@
     <Compile Include="Models\Category\Mark.cs" />
     <Compile Include="Models\Category\PlayerType.cs" />
     <Compile Include="Models\Player\Cpu.cs" />
-    <Compile Include="Models\Player\Player.cs" />
-    <Compile Include="Models\Player\PlayerFactory.cs" />
+    <Compile Include="Models\Player\User.cs" />
+    <Compile Include="Models\PlayerFactory.cs" />
     <Compile Include="Models\Util\Util.cs" />
     <Compile Include="ViewModels\Base\DelegateCommand.cs" />
     <Compile Include="ViewModels\Event\NavigateMainPageEventArg.cs" />

@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ISettingModel.cs" />
     <Compile Include="Models\Player\BasePlayer.cs" />
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Category\Mark.cs" />
@@ -126,10 +127,11 @@
     <Compile Include="Models\Player\Cpu.cs" />
     <Compile Include="Models\Player\User.cs" />
     <Compile Include="Models\PlayerFactory.cs" />
+    <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\Util\Util.cs" />
     <Compile Include="ViewModels\Base\DelegateCommand.cs" />
     <Compile Include="ViewModels\Event\NavigateMainPageEventArg.cs" />
-    <Compile Include="ViewModels\TitlePageViewModel.cs" />
+    <Compile Include="ViewModels\SettingPageViewModel.cs" />
     <Compile Include="Views\Control\SquareButton.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -138,8 +140,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
-    <Compile Include="Views\TitlePage.xaml.cs">
-      <DependentUpon>TitlePage.xaml</DependentUpon>
+    <Compile Include="Views\SettingPage.xaml.cs">
+      <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +168,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TitlePage.xaml">
+    <Page Include="Views\SettingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -23,14 +23,14 @@ namespace Sanmoku.Models.Player
 			while(true)
 			{
 				var rondom = new Random((int)DateTime.UtcNow.Ticks);
-				var r = rondom.Next(0, this.xmokuModel.Size);
-				var c = rondom.Next(0, this.xmokuModel.Size);
+				var r = rondom.Next(0, this.xmokuModel.BoardSize);
+				var c = rondom.Next(0, this.xmokuModel.BoardSize);
 
-				var t = this.xmokuModel.GetAt((r, c));
+				var t = this.xmokuModel.GetSquare((r, c));
 				if (t == string.Empty)
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(100));
-					this.xmokuModel.SetAt((r, c));
+					this.xmokuModel.SetSquare((r, c));
 					return;
 				}
 			}

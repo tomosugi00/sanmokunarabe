@@ -40,11 +40,9 @@ namespace Sanmoku.Views
 			this.mainPageViewModel = new MainPageViewModel(e.Parameter);
 			this.TurnLabel.Text = this.mainPageViewModel.CurrentTurn;
 			this.WinnerLabel.Text = this.mainPageViewModel.Winner;
-			//this.mainPageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
-			this.mainPageViewModel.SetRepaintEventHandler(new EventHandler(this.RepaintEvent));
+			this.mainPageViewModel.SetRepaintEvent(new EventHandler(this.RepaintEvent));
 			this.InitializeBoard();
 
-			//スタート
 			this.mainPageViewModel.GameStart();
 		}
 
@@ -80,7 +78,7 @@ namespace Sanmoku.Views
 		{
 			var btn = new SquareButton(square)
 			{
-				Content = this.mainPageViewModel.GetSquareFrom((square.row, square.col)),
+				Content = this.mainPageViewModel.GetSquare((square.row, square.col)),
 				BorderThickness = new Thickness(5, 5, 5, 5),
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch
@@ -88,8 +86,8 @@ namespace Sanmoku.Views
 			//ボタン押下時
 			btn.Click += new RoutedEventHandler(this.SquareButton_Click);
 			//描画時のイベント
-			this.mainPageViewModel.SetRepaintEventHandler(new EventHandler(
-				(s, e) => { btn.Content = this.mainPageViewModel.GetSquareFrom(btn.Square); }));
+			this.mainPageViewModel.SetRepaintEvent(new EventHandler(
+				(s, e) => { btn.Content = this.mainPageViewModel.GetSquare(btn.Square); }));
 			Grid.SetRow(btn, square.row);
 			Grid.SetColumn(btn, square.col);
 			return btn;
@@ -111,7 +109,7 @@ namespace Sanmoku.Views
 		/// <param name="e"></param>
 		private void RetryButton_Click(object sender, RoutedEventArgs e)
 		{
-			this.mainPageViewModel.RetryGame();
+			this.mainPageViewModel.GameRetry();
 		}
 
 		/// <summary>
@@ -123,7 +121,7 @@ namespace Sanmoku.Views
 		{
 			if (sender is SquareButton btn)
 			{
-				this.mainPageViewModel.SetSquareTo((btn.Row, btn.Columm));
+				this.mainPageViewModel.SetSquare((btn.Row, btn.Columm));
 			}
 		}
 		#endregion

@@ -18,24 +18,18 @@ using Sanmoku.ViewModels;
 namespace Sanmoku.Views
 {
 	/// <summary>
-	/// <see cref="TitlePage"/>のコードビハインド
+	/// <see cref="SettingPage"/>のコードビハインド
 	/// </summary>
-	public sealed partial class TitlePage : Page
+	public sealed partial class SettingPage : Page
 	{
-		/// <summary>
-		/// 対応するViewModel
-		/// </summary>
-		private readonly TitlePageViewModel titlePageViewModel = new TitlePageViewModel();
+		private readonly SettingPageViewModel settingPageViewModel = new SettingPageViewModel();
 
-		/// <summary>
-		/// コンストラクタ
-		/// </summary>
-		public TitlePage()
+		public SettingPage()
 		{
 			this.InitializeComponent();
 			this.SettingCompornent();
-			this.titlePageViewModel.RepaintEventHandler += new EventHandler(this.RepaintEvent);
-			this.titlePageViewModel.NavigateViewEventHandler += new EventHandler(this.NavigateMainPageEvent);
+			this.settingPageViewModel.SetRepaintEvent(new EventHandler(this.RepaintEvent));
+			this.settingPageViewModel.SetNavigateViewEvent(new EventHandler(this.NavigateMainPageEvent));
 		}
 
 		#region イベント
@@ -44,11 +38,11 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void RepaintEvent(object sender, EventArgs e)
 		{
-			this.XLabel.Text = this.titlePageViewModel.Xmoku.ToString();
-			this.Player1ComboBox.SelectedIndex = this.titlePageViewModel.Player1;
-			this.Player2ComboBox.SelectedIndex = this.titlePageViewModel.Player2;
-			this.SizeSlider.Value = this.titlePageViewModel.Size;
-			this.XmokuSlider.Value = this.titlePageViewModel.Xmoku;
+			this.XLabel.Text = this.settingPageViewModel.Xmoku.ToString();
+			this.Player1ComboBox.SelectedIndex = this.settingPageViewModel.Player1;
+			this.Player2ComboBox.SelectedIndex = this.settingPageViewModel.Player2;
+			this.SizeSlider.Value = this.settingPageViewModel.BoardSize;
+			this.XmokuSlider.Value = this.settingPageViewModel.Xmoku;
 		}
 		/// <summary>
 		/// 対戦画面へ画面遷移します。
@@ -80,7 +74,7 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void SettingXLabelTextBox()
 		{
-			this.XLabel.Text = this.titlePageViewModel.Xmoku.ToString();
+			this.XLabel.Text = this.settingPageViewModel.Xmoku.ToString();
 			return;
 		}
 		/// <summary>
@@ -88,11 +82,11 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void SettingPlayer1Combobox()
 		{
-			foreach (var type in this.titlePageViewModel.Player1TypeStringList)
+			foreach (var type in this.settingPageViewModel.Player1TypeList)
 			{
 				this.Player1ComboBox.Items.Add(type);
 			}
-			this.Player1ComboBox.SelectedIndex = this.titlePageViewModel.Player1;
+			this.Player1ComboBox.SelectedIndex = this.settingPageViewModel.Player1;
 			return;
 		}
 		/// <summary>
@@ -100,11 +94,11 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void SettingPlayer2Combobox()
 		{
-			foreach (var type in this.titlePageViewModel.Player2TypesStringList)
+			foreach (var type in this.settingPageViewModel.Player2TypesList)
 			{
 				this.Player2ComboBox.Items.Add(type);
 			}
-			this.Player2ComboBox.SelectedIndex = this.titlePageViewModel.Player2;
+			this.Player2ComboBox.SelectedIndex = this.settingPageViewModel.Player2;
 			return;
 		}
 		/// <summary>
@@ -112,9 +106,9 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void SettingSizeSlider()
 		{
-			this.SizeSlider.Maximum = this.titlePageViewModel.MaximumSize;
-			this.SizeSlider.Minimum = this.titlePageViewModel.MinimumSize;
-			this.SizeSlider.Value = this.titlePageViewModel.Size;
+			this.SizeSlider.Maximum = this.settingPageViewModel.MaximumSize;
+			this.SizeSlider.Minimum = this.settingPageViewModel.MinimumSize;
+			this.SizeSlider.Value = this.settingPageViewModel.BoardSize;
 			return;
 		}
 		/// <summary>
@@ -122,9 +116,9 @@ namespace Sanmoku.Views
 		/// </summary>
 		private void SettingXmokuSlider()
 		{
-			this.XmokuSlider.Maximum = this.titlePageViewModel.MaximumXmoku;
-			this.XmokuSlider.Minimum = this.titlePageViewModel.MinimumXmoku;
-			this.XmokuSlider.Value = this.titlePageViewModel.Xmoku;
+			this.XmokuSlider.Maximum = this.settingPageViewModel.MaximumXmoku;
+			this.XmokuSlider.Minimum = this.settingPageViewModel.MinimumXmoku;
+			this.XmokuSlider.Value = this.settingPageViewModel.Xmoku;
 			return;
 		}
 		#endregion
@@ -137,7 +131,7 @@ namespace Sanmoku.Views
 		/// <param name="e"></param>
 		private void Player1ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			this.titlePageViewModel.SetPlayer1(this.Player1ComboBox.SelectedIndex);
+			this.settingPageViewModel.SetPlayer1(this.Player1ComboBox.SelectedIndex);
 		}
 		/// <summary>
 		/// プレイヤー2を指定した際のアクション
@@ -146,7 +140,7 @@ namespace Sanmoku.Views
 		/// <param name="e"></param>
 		private void Player2ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			this.titlePageViewModel.SetPlayer2(this.Player2ComboBox.SelectedIndex);
+			this.settingPageViewModel.SetPlayer2(this.Player2ComboBox.SelectedIndex);
 		}
 		/// <summary>
 		/// サイズを指定した際のアクション
@@ -155,7 +149,7 @@ namespace Sanmoku.Views
 		/// <param name="e"></param>
 		private void SizeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
-			this.titlePageViewModel.SetSize(this.SizeSlider.Value);
+			this.settingPageViewModel.SetBoardSize(this.SizeSlider.Value);
 		}
 		/// <summary>
 		/// X目(勝利マーク数)を指定した際のアクション
@@ -164,7 +158,7 @@ namespace Sanmoku.Views
 		/// <param name="e"></param>
 		private void XmokuSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
-			this.titlePageViewModel.SetXmoku(this.XmokuSlider.Value);
+			this.settingPageViewModel.SetXmoku(this.XmokuSlider.Value);
 		}
 		/// <summary>
 		/// スタートボタンを押下した際のアクション
@@ -174,7 +168,7 @@ namespace Sanmoku.Views
 		private void StartButton_Click(object sender, RoutedEventArgs e)
 		{
 			//画面遷移。モデルを手渡し。
-			this.titlePageViewModel.NavigateMainPage();
+			this.settingPageViewModel.NavigateMainPage();
 		}
 		#endregion
 	}

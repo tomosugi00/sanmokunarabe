@@ -9,14 +9,11 @@ namespace Sanmoku.ViewModels.Event
 {
 	public class NavigateMainPageEventArg : EventArgs
 	{
-		/// <summary>
-		/// Page間で送受信するModel
-		/// </summary>
-		public XmokuModel XmokuModel { get; }
+		public ISetting ISettingModel { get; }
 
-		public NavigateMainPageEventArg(XmokuModel model)
+		public NavigateMainPageEventArg(ISetting model)
 		{
-			this.XmokuModel = model ?? throw new ArgumentNullException();
+			this.ISettingModel = model ?? throw new ArgumentNullException(nameof(model));
 		}
 	}
 }

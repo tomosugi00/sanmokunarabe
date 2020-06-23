@@ -28,14 +28,18 @@ namespace Sanmoku.Views
 		{
 			this.InitializeComponent();
 			this.SettingCompornent();
+
 			this.settingPageViewModel.SetRepaintEvent(new EventHandler(this.RepaintEvent));
 			this.settingPageViewModel.SetNavigateViewEvent(new EventHandler(this.NavigateMainPageEvent));
 		}
 
 		#region イベント
+
 		/// <summary>
 		/// 画面の再描画を行います。
 		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void RepaintEvent(object sender, EventArgs e)
 		{
 			this.XLabel.Text = this.settingPageViewModel.Xmoku.ToString();
@@ -44,6 +48,7 @@ namespace Sanmoku.Views
 			this.SizeSlider.Value = this.settingPageViewModel.BoardSize;
 			this.XmokuSlider.Value = this.settingPageViewModel.Xmoku;
 		}
+
 		/// <summary>
 		/// 対戦画面へ画面遷移します。
 		/// </summary>
@@ -53,6 +58,7 @@ namespace Sanmoku.Views
 		{
 			this.Frame.Navigate(typeof(MainPage), e);
 		}
+
 		#endregion
 
 		#region 初期設定

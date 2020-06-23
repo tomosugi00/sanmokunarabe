@@ -38,16 +38,18 @@ namespace Sanmoku.Views
 			base.OnNavigatedTo(e);
 
 			this.mainPageViewModel = new MainPageViewModel(e.Parameter);
+			this.mainPageViewModel.SetRepaintEvent(new EventHandler(this.RepaintEvent));
+
+			//画面コンポーネント初期化
 			this.TurnLabel.Text = this.mainPageViewModel.CurrentTurn;
 			this.WinnerLabel.Text = this.mainPageViewModel.Winner;
-			this.mainPageViewModel.SetRepaintEvent(new EventHandler(this.RepaintEvent));
 			this.InitializeBoard();
 
 			this.mainPageViewModel.GameStart();
 		}
 
 		/// <summary>
-		/// ボードを生成します。
+		/// ボードを初期化します
 		/// </summary>
 		private void InitializeBoard()
 		{
@@ -83,27 +85,32 @@ namespace Sanmoku.Views
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch
 			};
-			//ボタン押下時
+			
+			//イベント登録
 			btn.Click += new RoutedEventHandler(this.SquareButton_Click);
-			//描画時のイベント
-			this.mainPageViewModel.SetRepaintEvent(new EventHandler(
-				(s, e) => { btn.Content = this.mainPageViewModel.GetSquare(btn.Square); }));
+			this.mainPageViewModel.SetRepaintEvent(
+				new EventHandler((s, e) => { btn.Content = this.mainPageViewModel.GetSquare(btn.Square); }));
+
 			Grid.SetRow(btn, square.row);
 			Grid.SetColumn(btn, square.col);
 			return btn;
 		}
 
-		#region イベントハンドラー
+		#region イベント関係
+
+		/// <summary>
+		/// 再描画イベント発生時の処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void RepaintEvent(object sender, EventArgs e)
 		{
 			this.TurnLabel.Text = this.mainPageViewModel.CurrentTurn;
 			this.WinnerLabel.Text = this.mainPageViewModel.Winner;
 		}
-		#endregion
 
-		#region アクション
 		/// <summary>
-		/// やり直しボタンの操作
+		/// やり直しボタンの操作時の処理
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -113,7 +120,7 @@ namespace Sanmoku.Views
 		}
 
 		/// <summary>
-		/// ボード上のボタンの操作(共通)
+		/// ボード上のボタンの操作時の処理
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -124,6 +131,7 @@ namespace Sanmoku.Views
 				this.mainPageViewModel.SetSquare((btn.Row, btn.Columm));
 			}
 		}
+
 		#endregion
 	}
 }

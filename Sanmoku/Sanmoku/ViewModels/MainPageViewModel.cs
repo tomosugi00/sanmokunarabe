@@ -17,7 +17,9 @@ namespace Sanmoku.ViewModels
 		private readonly XmokuModel xmokuModel;
 
 		public int BoardSize => this.xmokuModel.BoardSize;
+
 		public string CurrentTurn => this.xmokuModel.GetCurrentTurn() + "のターンです";
+
 		public string Winner
 		{
 			get
@@ -33,11 +35,11 @@ namespace Sanmoku.ViewModels
 				return this.xmokuModel.GetWinner() + "の勝利です";
 			}
 		}
-		public void SetRepaintEvent(EventHandler handler)
-		{
-			this.xmokuModel.RepaintEventHandler += handler;
-		}
 
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="obj"></param>
 		public MainPageViewModel(object obj)
 		{
 			if (obj is NavigateMainPageEventArg e && e.ISettingModel != null)
@@ -50,26 +52,52 @@ namespace Sanmoku.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// 再描画時の処理を登録します。
+		/// </summary>
+		/// <param name="handler"></param>
+		public void SetRepaintEvent(EventHandler handler)
+		{
+			this.xmokuModel.RepaintEventHandler += handler;
+		}
+
+		/// <summary>
+		/// ゲームを開始します。
+		/// </summary>
 		public void GameStart()
 		{
 			this.xmokuModel.GameStart();
 		}
+
+		/// <summary>
+		/// ゲームをやり直します。
+		/// </summary>
 		public void GameRetry()
 		{
 			this.xmokuModel.GameRetry();
 		}
 
+		/// <summary>
+		/// <paramref name="square"/>の位置のマークを取得します。
+		/// </summary>
+		/// <param name="square"></param>
+		/// <returns></returns>
 		public string GetSquare((int, int) square)
 		{
 			return this.xmokuModel.GetSquare(square);
 		}
+
+		/// <summary>
+		/// <paramref name="square"/>の位置に現在のターンのマークをセットします。
+		/// 操作不能の状態の場合、処理は行われません。
+		/// </summary>
+		/// <param name="square"></param>
 		public void SetSquare((int, int) square)
 		{
-			if (!this.xmokuModel.CanOperate)
+			if (this.xmokuModel.CanOperate)
 			{
-				return;
+				this.xmokuModel.SetSquare(square);
 			}
-			this.xmokuModel.SetSquare(square);
 		}
 	}
 }

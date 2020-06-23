@@ -13,6 +13,9 @@ namespace Sanmoku.Models
 {
 	public class XmokuModel
 	{
+		/// <summary>
+		/// 設定情報
+		/// </summary>
 		private readonly ISetting setting;
 
 		private Board<Mark> board;

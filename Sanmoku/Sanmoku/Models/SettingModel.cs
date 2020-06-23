@@ -10,26 +10,32 @@ namespace Sanmoku.Models
 	public class SettingModel : ISetting
 	{
 		#region ゲーム設定(変更不可)
+
 		/// <summary>
 		/// ボードサイズの設定最大値
 		/// </summary>
-		public int MaximumSize { get; } = 10;
+		public int MaximumBoardSize { get; } = 10;
+
 		/// <summary>
 		/// ボードサイズの設定最小値
 		/// </summary>
-		public int MinimumSize { get; } = 3;
+		public int MinimumBoardSize { get; } = 3;
+
 		/// <summary>
 		/// X目(勝利マーク数)の設定最大値
 		/// </summary>
 		public int MaximumXmoku { get; } = 10;
+
 		/// <summary>
 		/// X目(勝利マーク数)の設定最小値
 		/// </summary>
 		public int MinimumXmoku { get; } = 3;
+
 		/// <summary>
 		/// 指定可能なプレイヤータイプ
 		/// </summary>
 		public static IReadOnlyList<string> PlayerTypeList => ConvertStringListFrom(PlayerTypes);
+
 		/// <summary>
 		/// プレイヤータイプ。順番保証。
 		/// </summary>
@@ -39,6 +45,7 @@ namespace Sanmoku.Models
 			PlayerType.CPU,
 			PlayerType.NetWork
 		};
+
 		#endregion
 
 		#region ゲーム設定(変更可)
@@ -66,7 +73,7 @@ namespace Sanmoku.Models
 		public int BoardSize { get; private set; }
 		public void SetBoardSize(int size)
 		{
-			if (size < MinimumSize || size > MaximumSize)
+			if (size < MinimumBoardSize || size > MaximumBoardSize)
 				throw new ArgumentOutOfRangeException(nameof(size));
 
 			this.BoardSize = size < this.Xmoku ? this.Xmoku : size;
@@ -82,9 +89,19 @@ namespace Sanmoku.Models
 			this.Xmoku = xmoku > this.BoardSize ? this.BoardSize : xmoku;
 			this.UpdateSettingEventHandler?.Invoke(this, null);
 		}
+
 		#endregion
 
+		public SettingModel()
+		{
+			this.Player1 = 0;
+			this.Player2 = 0;
+			this.BoardSize = MinimumBoardSize;
+			this.Xmoku =  MinimumXmoku;
+		}
+
 		#region サポートメソッド
+
 		private static IReadOnlyList<string> ConvertStringListFrom<T>(IEnumerable<T> objs)
 		{
 			var list = new List<string>();
@@ -94,6 +111,7 @@ namespace Sanmoku.Models
 			}
 			return list;
 		}
+
 		#endregion
 	}
 }

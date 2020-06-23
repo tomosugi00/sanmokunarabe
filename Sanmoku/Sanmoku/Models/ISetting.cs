@@ -11,11 +11,11 @@ namespace Sanmoku.Models
 		/// <summary>
 		/// ボードサイズの設定最大値
 		/// </summary>
-		int MaximumSize { get; }
+		int MaximumBoardSize { get; }
 		/// <summary>
 		/// ボードサイズの設定最小値
 		/// </summary>
-		int MinimumSize { get; }
+		int MinimumBoardSize { get; }
 		/// <summary>
 		/// X目(勝利マーク数)の設定最大値
 		/// </summary>

@@ -18,56 +18,28 @@ namespace Sanmoku.ViewModels
 	{
 		private readonly SettingModel settingModel = new SettingModel();
 
+		private event EventHandler NavigateViewEventHandler;
+
 		#region ゲーム設定(変更不可)
-		public int MaximumSize => this.settingModel.MaximumSize;
-		public int MinimumSize => this.settingModel.MinimumSize;
+
+		public int MaximumSize => this.settingModel.MaximumBoardSize;
+		public int MinimumSize => this.settingModel.MinimumBoardSize;
 		public int MaximumXmoku => this.settingModel.MaximumXmoku;
 		public int MinimumXmoku => this.settingModel.MinimumXmoku;
 		public IReadOnlyList<string> Player1TypeList => SettingModel.PlayerTypeList;
 		public IReadOnlyList<string> Player2TypesList => SettingModel.PlayerTypeList;
-		#endregion
 
-		#region イベント関連
-
-		private event EventHandler NavigateViewEventHandler;
-		
-		/// <summary>
-		/// 画面遷移時に実行する処理を追加
-		/// </summary>
-		/// <param name="handler"></param>
-		public void SetNavigateViewEvent(EventHandler handler)
-		{
-			if (handler == null)
-				throw new ArgumentNullException(nameof(handler));
-			this.NavigateViewEventHandler += handler;
-		}
-		/// <summary>
-		/// 再描画時に実行する処理を追加
-		/// </summary>
-		/// <param name="handler"></param>
-		public void SetRepaintEvent(EventHandler handler)
-		{
-			if (handler == null)
-				throw new ArgumentNullException(nameof(handler));
-			this.settingModel.UpdateSettingEventHandler += handler;
-		}
 		#endregion
 
 		#region ゲーム設定(変更可)
 
-		public int Player1
-		{
-			get => this.settingModel.Player1;
-		}
+		public int Player1 => this.settingModel.Player1;
 		public void SetPlayer1(int index)
 		{
 			this.settingModel.SetPlayer1(index);
 		}
 
-		public int Player2
-		{
-			get => this.settingModel.Player2;
-		}
+		public int Player2 => this.settingModel.Player2;
 		public void SetPlayer2(int index)
 		{
 			this.settingModel.SetPlayer2(index);
@@ -84,8 +56,35 @@ namespace Sanmoku.ViewModels
 		{
 			this.settingModel.SetXmoku((int)xmoku);
 		}
+
 		#endregion
 
+		#region イベント関連
+
+		/// <summary>
+		/// 画面遷移時に実行する処理を追加
+		/// </summary>
+		/// <param name="handler"></param>
+		public void SetNavigateViewEvent(EventHandler handler)
+		{
+			if (handler == null)
+				throw new ArgumentNullException(nameof(handler));
+			this.NavigateViewEventHandler += handler;
+		}
+
+		/// <summary>
+		/// 再描画時に実行する処理を追加
+		/// </summary>
+		/// <param name="handler"></param>
+		public void SetRepaintEvent(EventHandler handler)
+		{
+			if (handler == null)
+				throw new ArgumentNullException(nameof(handler));
+			this.settingModel.UpdateSettingEventHandler += handler;
+		}
+
+		#endregion
+		
 		/// <summary>
 		/// 対戦画面への画面遷移を行う
 		/// </summary>

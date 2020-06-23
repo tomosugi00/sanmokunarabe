@@ -70,7 +70,7 @@ namespace Sanmoku
                 if (rootFrame.Content == null)
                 {
                     // 最初のページに画面遷移
-                    rootFrame.Navigate(typeof(Views.MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(Views.SettingPage), e.Arguments);
                 }
                 // 現在のウィンドウをアクティブ化
                 Window.Current.Activate();

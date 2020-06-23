@@ -5,78 +5,144 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Composition;
 
+using Sanmoku.Models.Category;
+using Sanmoku.Models.Util;
+using Sanmoku.Models.Player;
+
 namespace Sanmoku.Models
 {
-	public class XmokuModel
+	public class XmokuModel : IXmokuModel
 	{
-		private readonly int BoardSize;
-		private readonly int MokuNumber;
+		/// <summary>
+		/// 設定情報
+		/// </summary>
+		private readonly ISetting setting;
 
 		private Board<Mark> board;
 		private Mark currentTurn;
 		private Mark winner;
+		private BasePlayer player1;
+		private BasePlayer player2;
 
-		public event EventHandler SquareChangedEventHandler;
-		public event EventHandler TurnChangedEventHandler;
-		public event EventHandler RetryEventHandler;
-		public event EventHandler FinishedEventHandler;
+		/// <summary>
+		/// 再描画時のイベントハンドラー
+		/// </summary>
+		public event EventHandler RepaintEventHandler;
+
+		public int BoardSize => this.setting.BoardSize;
+		public int Player1 => this.setting.Player1;
+		public int Player2 => this.setting.Player2;
 
 		public bool IsFinished { get; private set; }
 
-		public XmokuModel(int size, int moku)
+		public XmokuModel(ISetting settingModel)
 		{
-			if (size < moku)
-				throw new ArgumentException();
-			this.BoardSize = size;
-			this.MokuNumber = moku;
+			this.setting = settingModel;
 
-			this.board = new Board<Mark>(size, Mark.Empty);
-			this.currentTurn = Mark.Maru;
 			this.IsFinished = false;
+
+			this.board = new Board<Mark>(settingModel.BoardSize, Mark.Empty);
+			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
 		}
 
 		public string GetCurrentTurn()
 		{
-			return ConvertFrom(this.currentTurn);
+			return ConvertStringFrom(this.currentTurn);
 		}
+
 		public string GetWinner()
 		{
-			return ConvertFrom(this.winner);
+			return ConvertStringFrom(this.winner);
 		}
 
-		public string GetAt((int row, int culumn) square)
+		public string GetSquare((int row, int culumn) square)
 		{
-			return ConvertFrom(this.board.GetAt(square));
+			return ConvertStringFrom(this.board.GetAt(square));
 		}
 
-		public void SetAt((int row, int culumn) square)
+		/// <summary>
+		/// 画面操作が可能であれば<paramref name="square"/>の位置に現在のプレイヤーのマークをセットします。
+		/// </summary>
+		/// <param name="square"></param>
+		public void SetSquareIfCan((int row, int culumn) square)
 		{
-			if(this.board.GetAt(square)!=Mark.Empty)
+			var player = CurrentPlayer();
+			if (player.CanOperate)
+			{
+				player.Action(square);
+			}
+		}
+
+		/// <summary>
+		/// <paramref name="square"/>の位置に現在のプレイヤーのマークをセットします。
+		/// <para>※Model層以下のクラスのみ参照してください。</para>
+		/// </summary>
+		/// <param name="square"></param>
+		public void SetSquare((int row, int culumn) square)
+		{
+			if (this.CheckFinished() || this.board.GetAt(square) != Mark.Empty)
 			{
 				return;
 			}
+
 			this.board.SetAt(square, this.currentTurn);
-			this.SquareChangedEventHandler?.Invoke(this, null);
 
-			if (this.CheckFinished())
+			if (!this.CheckFinished())
 			{
-				this.FinishedEventHandler?.Invoke(this, null);
-				return;
+				this.ChangeTurn();
 			}
-			this.ChangeTurn();
+			this.RepaintEventHandler?.Invoke(this, null);
 			return;
 		}
 
-		public void Retry()
+		/// <summary>
+		/// ゲームを開始します
+		/// </summary>
+		public void GameStart()
 		{
-			this.board = new Board<Mark>(this.BoardSize, Mark.Empty);
+			this.player1 = PlayerFactory.GetPlayer1(this);
+			this.player2 = PlayerFactory.GetPlayer2(this);
+			this.player1.StartAsync();
+		}
+
+		/// <summary>
+		/// ゲームを対戦開始直後に戻します。
+		/// </summary>
+		public void GameRetry()
+		{
+			this.board = new Board<Mark>(this.setting.BoardSize, Mark.Empty);
 			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
-			this.RetryEventHandler?.Invoke(this, null);
+
+			//this.CanManual = false;
+			this.IsFinished = false;
+
+			this.RepaintEventHandler?.Invoke(this, null);
+			this.GameStart();
 			return;
 		}
 
+		/// <summary>
+		/// 現在のプレイヤーを取得します。
+		/// </summary>
+		/// <returns></returns>
+		private BasePlayer CurrentPlayer()
+		{
+			switch (this.currentTurn)
+			{
+				case Mark.Maru:
+					return this.player1;
+				case Mark.Batsu:
+					return this.player2;
+				default:
+					throw new NotImplementedException(); ;
+			}
+		}
+
+		/// <summary>
+		/// ターンを交代します。
+		/// </summary>
 		private void ChangeTurn()
 		{
 			switch (this.currentTurn)
@@ -90,10 +156,24 @@ namespace Sanmoku.Models
 				default:
 					throw new NotImplementedException();
 			}
-			this.TurnChangedEventHandler?.Invoke(this, null);
-			return;
+
+			switch (this.currentTurn)
+			{
+				case Mark.Maru:
+					this.player1.StartAsync();
+					return;
+				case Mark.Batsu:
+					this.player2.StartAsync();
+					return;
+				default:
+					throw new NotImplementedException();
+			}
 		}
 
+		/// <summary>
+		/// ゲームが終了したか判定します。
+		/// </summary>
+		/// <returns></returns>
 		private bool CheckFinished()
 		{
 			if (IsFinishedBy(Mark.Maru))
@@ -108,7 +188,7 @@ namespace Sanmoku.Models
 				this.winner = Mark.Batsu;
 				return true;
 			}
-			if (this.IsDraw())
+			if (this.CheckDraw())
 			{
 				this.IsFinished = true;
 				this.winner = Mark.Empty;
@@ -118,15 +198,22 @@ namespace Sanmoku.Models
 			return false;
 		}
 
+		#region 勝利判定
+
+		/// <summary>
+		/// <paramref name="mark"/>が勝利したか判定します。
+		/// <paramref name="mark"/>に<seealso cref="Mark.Empty"/>を指定した場合はfalseを返します。
+		/// </summary>
+		/// <param name="mark"></param>
+		/// <returns></returns>
 		private bool IsFinishedBy(Mark mark)
 		{
 			if (mark == Mark.Empty)
 			{
 				return false;
 			}
-			return CheckVertical(mark) || CheckHorizontal(mark) || CheckDiagonal(mark);
+			return CheckVertical(mark) || CheckHorizontal(mark) || CheckLowerRight(mark) || CheckUpperRight(mark);
 		}
-
 
 		/// <summary>
 		/// 縦が揃ったか
@@ -135,11 +222,19 @@ namespace Sanmoku.Models
 		/// <returns></returns>
 		private bool CheckVertical(Mark mark)
 		{
-			for (var column = 0; column < this.BoardSize; column++)
+			for (var r = 0; r <= this.setting.BoardSize - this.setting.Xmoku; r++)
 			{
-				if (this.board.GetAt((0, column)) == mark && this.board.GetAt((1, column)) == mark && this.board.GetAt((2, column)) == mark)
+				for (var c = 0; c < this.setting.BoardSize; c++)
 				{
-					return true;
+					var list = new List<Mark>();
+					for (var i = r; i < r + this.setting.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((i, c)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
 				}
 			}
 			return false;
@@ -148,34 +243,74 @@ namespace Sanmoku.Models
 		/// <summary>
 		/// 横が揃ったか
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="mark"></param>
 		/// <returns></returns>
-		private bool CheckHorizontal(Mark target)
+		private bool CheckHorizontal(Mark mark)
 		{
-			for (var row = 0; row < this.BoardSize; row++)
+			for (var r = 0; r < this.setting.BoardSize; r++)
 			{
-				if (this.board.GetAt((row, 0)) == target && this.board.GetAt((row, 1)) == target && this.board.GetAt((row, 2)) == target)
+				for (var c = 0; c <= this.setting.BoardSize - this.setting.Xmoku; c++)
 				{
-					return true;
+					var list = new List<Mark>();
+					for (var i = c; i < c + this.setting.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r, i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
 				}
 			}
 			return false;
 		}
 
 		/// <summary>
-		/// 斜めが揃ったか
+		/// 斜め方向(右下がり)も揃ったか
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="mark"></param>
 		/// <returns></returns>
-		private bool CheckDiagonal(Mark target)
+		private bool CheckLowerRight(Mark mark)
 		{
-			if (this.board.GetAt((0, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((2, 2)) == target)
+			for (var r = 0; r <= this.setting.BoardSize - this.setting.Xmoku; r++)
 			{
-				return true;
+				for (var c = 0; c <= this.setting.BoardSize - this.setting.Xmoku; c++)
+				{
+					var list = new List<Mark>();
+					for (var i = 0; i < this.setting.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r + i, c + i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
+				}
 			}
-			else if (this.board.GetAt((2, 0)) == target && this.board.GetAt((1, 1)) == target && this.board.GetAt((0, 2)) == target)
+			return false;
+		}
+
+		/// <summary>
+		/// 斜め方向(右上がり)に揃ったか
+		/// </summary>
+		/// <param name="mark"></param>
+		/// <returns></returns>
+		private bool CheckUpperRight(Mark mark)
+		{
+			for (var r = this.setting.BoardSize - 1; r >= this.setting.Xmoku - 1; r--)
 			{
-				return true;
+				for (var c = 0; c <= this.setting.BoardSize - this.setting.Xmoku; c++)
+				{
+					var list = new List<Mark>();
+					for (var i = 0; i < this.setting.Xmoku; i++)
+					{
+						list.Add(this.board.GetAt((r - i, c + i)));
+					}
+					if (list.ContainsOnly(mark))
+					{
+						return true;
+					}
+				}
 			}
 			return false;
 		}
@@ -184,13 +319,13 @@ namespace Sanmoku.Models
 		/// 引き分けか
 		/// </summary>
 		/// <returns></returns>
-		private bool IsDraw()
+		private bool CheckDraw()
 		{
-			for (var row = 0; row < this.BoardSize; row++)
+			for (var r = 0; r < this.setting.BoardSize; r++)
 			{
-				for (var column = 0; column < this.BoardSize; column++)
+				for (var c = 0; c < this.setting.BoardSize; c++)
 				{
-					if (this.board.GetAt((row, column)) == Mark.Empty)
+					if (this.board.GetAt((r, c)) == Mark.Empty)
 					{
 						return false;
 					}
@@ -199,7 +334,11 @@ namespace Sanmoku.Models
 			return true;
 		}
 
-		private static string ConvertFrom(Mark state)
+		#endregion
+
+		#region ViewModel用変換
+
+		private static string ConvertStringFrom(Mark state)
 		{
 			switch (state)
 			{
@@ -213,5 +352,7 @@ namespace Sanmoku.Models
 					throw new NotImplementedException();
 			}
 		}
+
+		#endregion
 	}
 }

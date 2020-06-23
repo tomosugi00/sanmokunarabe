@@ -4,23 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sanmoku.Models
+namespace Sanmoku.Models.Player
 {
-	public enum Mark
+	/// <summary>
+	/// 操作するプレイヤーの種類
+	/// </summary>
+	public enum PlayerType
 	{
 		/// <summary>
-		/// カラの状態
+		/// ユーザー
 		/// </summary>
-		Empty,
-
+		User,
 		/// <summary>
-		/// "○"の状態
+		/// CPU
 		/// </summary>
-		Maru,
-
+		CPU,
 		/// <summary>
-		/// "×"の状態
+		/// プレイヤー(通信)
 		/// </summary>
-		Batsu,
+		NetWork,
 	}
 }

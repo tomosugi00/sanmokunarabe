@@ -94,10 +94,7 @@ namespace Sanmoku.ViewModels
 		/// <param name="square"></param>
 		public void SetSquare((int, int) square)
 		{
-			if (this.xmokuModel.CanOperate)
-			{
-				this.xmokuModel.SetSquare(square);
-			}
+			this.xmokuModel.SetSquareIfCan(square);
 		}
 	}
 }

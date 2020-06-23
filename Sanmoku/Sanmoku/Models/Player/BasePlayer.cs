@@ -9,12 +9,17 @@ namespace Sanmoku.Models.Player
 {
 	public abstract class BasePlayer
 	{
-		protected readonly XmokuModel xmokuModel;
+		protected readonly IXmokuModel xmokuModel;
 
-		public BasePlayer(XmokuModel model)
+		public BasePlayer(IXmokuModel model)
 		{
 			this.xmokuModel = model ?? throw new ArgumentNullException();
 		}
+
+		/// <summary>
+		/// 画面から操作可能か
+		/// </summary>
+		public abstract bool CanOperate { get; }
 
 		/// <summary>
 		/// プレイヤーの操作を実行します
@@ -24,6 +29,6 @@ namespace Sanmoku.Models.Player
 		/// <summary>
 		/// 画面の操作を受け付けます
 		/// </summary>
-		public abstract void Action();
+		public abstract void Action((int row, int culumn) square);
 	}
 }

@@ -11,7 +11,7 @@ using Sanmoku.Models.Player;
 
 namespace Sanmoku.Models
 {
-	public class XmokuModel
+	public class XmokuModel : IXmokuModel
 	{
 		/// <summary>
 		/// 設定情報
@@ -24,21 +24,21 @@ namespace Sanmoku.Models
 		private BasePlayer player1;
 		private BasePlayer player2;
 
+		/// <summary>
+		/// 再描画時のイベントハンドラー
+		/// </summary>
+		public event EventHandler RepaintEventHandler;
+
 		public int BoardSize => this.setting.BoardSize;
 		public int Player1 => this.setting.Player1;
 		public int Player2 => this.setting.Player2;
 
 		public bool IsFinished { get; private set; }
-		public bool CanManual { get; set; }
-		public bool CanOperate => !this.IsFinished && CanManual;
-
-		public event EventHandler RepaintEventHandler;
 
 		public XmokuModel(ISetting settingModel)
 		{
 			this.setting = settingModel;
 
-			this.CanManual = false;
 			this.IsFinished = false;
 
 			this.board = new Board<Mark>(settingModel.BoardSize, Mark.Empty);
@@ -61,20 +61,37 @@ namespace Sanmoku.Models
 			return ConvertStringFrom(this.board.GetAt(square));
 		}
 
+		/// <summary>
+		/// 画面操作が可能であれば<paramref name="square"/>の位置に現在のプレイヤーのマークをセットします。
+		/// </summary>
+		/// <param name="square"></param>
+		public void SetSquareIfCan((int row, int culumn) square)
+		{
+			var player = CurrentPlayer();
+			if (player.CanOperate)
+			{
+				player.Action(square);
+			}
+		}
+
+		/// <summary>
+		/// <paramref name="square"/>の位置に現在のプレイヤーのマークをセットします。
+		/// <para>※Model層以下のクラスのみ参照してください。</para>
+		/// </summary>
+		/// <param name="square"></param>
 		public void SetSquare((int row, int culumn) square)
 		{
-			if (this.board.GetAt(square) != Mark.Empty)
+			if (this.CheckFinished() || this.board.GetAt(square) != Mark.Empty)
 			{
 				return;
 			}
+
 			this.board.SetAt(square, this.currentTurn);
 
-			if (this.CheckFinished())
+			if (!this.CheckFinished())
 			{
-				this.RepaintEventHandler?.Invoke(this, null);
-				return;
+				this.ChangeTurn();
 			}
-			this.ChangeTurn();
 			this.RepaintEventHandler?.Invoke(this, null);
 			return;
 		}
@@ -98,12 +115,29 @@ namespace Sanmoku.Models
 			this.currentTurn = Mark.Maru;
 			this.winner = Mark.Empty;
 
-			this.CanManual = false;
+			//this.CanManual = false;
 			this.IsFinished = false;
 
 			this.RepaintEventHandler?.Invoke(this, null);
 			this.GameStart();
 			return;
+		}
+
+		/// <summary>
+		/// 現在のプレイヤーを取得します。
+		/// </summary>
+		/// <returns></returns>
+		private BasePlayer CurrentPlayer()
+		{
+			switch (this.currentTurn)
+			{
+				case Mark.Maru:
+					return this.player1;
+				case Mark.Batsu:
+					return this.player2;
+				default:
+					throw new NotImplementedException(); ;
+			}
 		}
 
 		/// <summary>
@@ -165,6 +199,7 @@ namespace Sanmoku.Models
 		}
 
 		#region 勝利判定
+
 		/// <summary>
 		/// <paramref name="mark"/>が勝利したか判定します。
 		/// <paramref name="mark"/>に<seealso cref="Mark.Empty"/>を指定した場合はfalseを返します。
@@ -179,6 +214,7 @@ namespace Sanmoku.Models
 			}
 			return CheckVertical(mark) || CheckHorizontal(mark) || CheckLowerRight(mark) || CheckUpperRight(mark);
 		}
+
 		/// <summary>
 		/// 縦が揃ったか
 		/// </summary>
@@ -203,6 +239,7 @@ namespace Sanmoku.Models
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// 横が揃ったか
 		/// </summary>
@@ -227,6 +264,7 @@ namespace Sanmoku.Models
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// 斜め方向(右下がり)も揃ったか
 		/// </summary>
@@ -251,6 +289,7 @@ namespace Sanmoku.Models
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// 斜め方向(右上がり)に揃ったか
 		/// </summary>
@@ -275,6 +314,7 @@ namespace Sanmoku.Models
 			}
 			return false;
 		}
+
 		/// <summary>
 		/// 引き分けか
 		/// </summary>
@@ -293,9 +333,11 @@ namespace Sanmoku.Models
 			}
 			return true;
 		}
+
 		#endregion
 
 		#region ViewModel用変換
+
 		private static string ConvertStringFrom(Mark state)
 		{
 			switch (state)
@@ -310,6 +352,7 @@ namespace Sanmoku.Models
 					throw new NotImplementedException();
 			}
 		}
+
 		#endregion
 	}
 }

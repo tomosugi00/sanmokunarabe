@@ -120,10 +120,11 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ISetting.cs" />
+    <Compile Include="Models\IXmokuModel.cs" />
     <Compile Include="Models\Player\BasePlayer.cs" />
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\Category\Mark.cs" />
-    <Compile Include="Models\Category\PlayerType.cs" />
+    <Compile Include="Models\Player\PlayerType.cs" />
     <Compile Include="Models\Player\Cpu.cs" />
     <Compile Include="Models\Player\User.cs" />
     <Compile Include="Models\PlayerFactory.cs" />

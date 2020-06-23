@@ -8,21 +8,19 @@ namespace Sanmoku.Models.Player
 {
 	public class User : BasePlayer
 	{
-		public User(XmokuModel model) : base(model) { }
+		public User(IXmokuModel model) : base(model) { }
 
-		public override void Action()
-		{
-			throw new NotImplementedException();
-		}
-
+		public override bool CanOperate => true;
 
 		public override async Task StartAsync()
 		{
-			//ボタン操作を可能にする
-			if(!this.xmokuModel.CanManual)
-			{
-				this.xmokuModel.CanManual = true;
-			}
+			await Task.Delay(TimeSpan.Zero);
+			return;
+		}
+
+		public override void Action((int row, int culumn) square)
+		{
+			this.xmokuModel.SetSquare(square);
 		}
 	}
 }

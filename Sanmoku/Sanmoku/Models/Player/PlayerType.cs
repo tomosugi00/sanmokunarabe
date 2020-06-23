@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sanmoku.Models.Category
+namespace Sanmoku.Models.Player
 {
 	/// <summary>
 	/// 操作するプレイヤーの種類

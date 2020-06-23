@@ -4,30 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Sanmoku.Models.Category;
-
 namespace Sanmoku.Models.Player
 {
 	public class Cpu : BasePlayer
 	{
-		public Cpu(XmokuModel model) : base(model) { }
+		public Cpu(IXmokuModel model) : base(model) { }
+
+		public override bool CanOperate => false;
 
 		public override async Task StartAsync()
 		{
-			//ボタン操作を不可能にする
-			if (this.xmokuModel.CanManual)
-			{
-				this.xmokuModel.CanManual = false;
-			}
-			//置けるまで無限ループ
 			while(true)
 			{
 				var rondom = new Random((int)DateTime.UtcNow.Ticks);
 				var r = rondom.Next(0, this.xmokuModel.BoardSize);
 				var c = rondom.Next(0, this.xmokuModel.BoardSize);
 
-				var t = this.xmokuModel.GetSquare((r, c));
-				if (t == string.Empty)
+				var mark = this.xmokuModel.GetSquare((r, c));
+				if (mark == string.Empty)
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(100));
 					this.xmokuModel.SetSquare((r, c));
@@ -36,9 +30,9 @@ namespace Sanmoku.Models.Player
 			}
 		}
 
-		public override void Action()
+		public override void Action((int row, int culumn) square)
 		{
-			throw new NotImplementedException();
+			return;
 		}
 	}
 }
